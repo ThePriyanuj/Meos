@@ -1,0 +1,23 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Minimalist Water Drop Silhouette -->
+    <path
+        android:fillColor="#33FFFFFF"
+        android:strokeColor="#B3FFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineJoin="round"
+        android:pathData="M54,24 C54,24 32,50 32,66 C32,78.15 41.85,88 54,88 C66.15,88 76,78.15 76,66 C76,50 54,24 54,24 Z" />
+    <!-- Caustic Inner Meniscus Highlight -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:pathData="M42,56 C38,62 38,70 44,76" />
+    <!-- Light Specular Gleam -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M48,44 A3.5,3.5 0 1,1 47.99,44 Z" />
+</vector>

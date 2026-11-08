@@ -1,0 +1,10 @@
+<resources>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="slate_bg">#121212</color>
+    <color name="slate_surface">#1E1E1E</color>
+    <color name="text_primary">#F5F5F5</color>
+    <color name="text_secondary">#8E8E93</color>
+    <color name="accent_subtle">#666666</color>
+</resources>
+
