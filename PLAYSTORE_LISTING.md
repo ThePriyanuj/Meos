@@ -140,3 +140,4 @@ https://github.com/ThePriyanuj/Meos/blob/master/PRIVACY_POLICY.md
    - **Release name**: `1.0.0`
    - **Release notes**: `Initial release of Meos: Minimalist Focus Launcher.`
    - Click **Next** > **Review release** > **Start rollout to Production**!
+
