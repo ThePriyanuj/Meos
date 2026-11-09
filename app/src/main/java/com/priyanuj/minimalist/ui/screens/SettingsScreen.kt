@@ -1,6 +1,9 @@
 package com.priyanuj.minimalist.ui.screens
 
+import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -65,6 +68,13 @@ fun SettingsScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            Toast.makeText(context, "custom wallpaper selected", Toast.LENGTH_SHORT).show()
+        }
+    }
     var currentSection by remember { mutableStateOf("main") }
 
     var autoOpenKeyboard by remember { mutableStateOf(true) }
@@ -228,6 +238,9 @@ fun SettingsScreen(
                         SettingsInfoRow("font size", fontSizes[fontSizeIdx], contentColor, subtextColor) {
                             fontSizeIdx = (fontSizeIdx + 1) % fontSizes.size
                             Toast.makeText(context, "font size: ${fontSizes[fontSizeIdx]}", Toast.LENGTH_SHORT).show()
+                        }
+                        SettingsNavRow("custom wallpaper", "gallery", contentColor, subtextColor) {
+                            galleryLauncher.launch("image/*")
                         }
                         SettingsToggleRow("automatically set matching lock screen background", matchLockScreen, contentColor) {
                             matchLockScreen = it

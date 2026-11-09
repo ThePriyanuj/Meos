@@ -935,6 +935,16 @@
             <span id="labelFontSize" class="settings-subtext text-[12px] lowercase">regular</span>
           </div>
 
+          <!-- Custom wallpaper -->
+          <div onclick="triggerCustomWallpaperPicker()" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] font-normal lowercase">custom wallpaper</span>
+            <div class="flex items-center space-x-1.5">
+              <span id="labelCustomWallpaper" class="settings-subtext text-[12px] lowercase">gallery</span>
+              <span class="settings-chevron text-[13px] font-light">&gt;</span>
+            </div>
+          </div>
+          <input type="file" id="customWallpaperInput" accept="image/*" class="hidden" onchange="handleCustomWallpaperSelected(event)">
+
           <!-- Automatically set matching lock screen background -->
           <div onclick="toggleSetting('matchLockScreen')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
             <span class="text-[13.5px] font-normal lowercase pr-3">automatically set matching lock screen background</span>
@@ -1398,9 +1408,74 @@
     ];
 
     // Wallpaper Switcher
+    let customWallpaperData = null;
+    try {
+      customWallpaperData = localStorage.getItem('meos_custom_wallpaper') || null;
+    } catch(e) {}
+
+    function triggerCustomWallpaperPicker() {
+      const input = document.getElementById('customWallpaperInput');
+      if (input) input.click();
+    }
+
+    function handleCustomWallpaperSelected(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const dataUrl = evt.target.result;
+        applyCustomWallpaper(dataUrl);
+      };
+      reader.readAsDataURL(file);
+      e.target.value = '';
+    }
+
+    function applyCustomWallpaper(dataUrl) {
+      customWallpaperData = dataUrl;
+      try {
+        localStorage.setItem('meos_custom_wallpaper', dataUrl);
+      } catch (err) {}
+
+      const phone = document.getElementById('phoneContainer');
+      if (phone) {
+        allAtmospheres.forEach(a => phone.classList.remove(`bg-${a.id}`));
+        phone.style.backgroundImage = `url("${dataUrl}")`;
+        phone.style.backgroundSize = 'cover';
+        phone.style.backgroundPosition = 'center';
+        phone.style.setProperty('--active-wp', `url("${dataUrl}")`);
+      }
+
+      const labelCustom = document.getElementById('labelCustomWallpaper');
+      if (labelCustom) labelCustom.textContent = 'active';
+
+      const labelColor = document.getElementById('labelColorTheme');
+      if (labelColor) labelColor.textContent = 'custom';
+
+      allAtmospheres.forEach(a => {
+        const check = document.getElementById(`check${a.id.charAt(0).toUpperCase() + a.id.slice(1)}`);
+        if (check) check.classList.add('hidden');
+        const topBtn = document.getElementById(`btnWp${a.id.charAt(0).toUpperCase() + a.id.slice(1)}`);
+        if (topBtn) {
+          topBtn.className = 'shrink-0 px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-all flex items-center space-x-1.5';
+        }
+      });
+
+      renderFavorites();
+      renderAllApps();
+      showToast('custom wallpaper set from gallery');
+    }
+
     function setWallpaper(wp) {
       currentWallpaper = wp;
+      customWallpaperData = null;
+      try { localStorage.removeItem('meos_custom_wallpaper'); } catch(e) {}
+      const labelCustom = document.getElementById('labelCustomWallpaper');
+      if (labelCustom) labelCustom.textContent = 'gallery';
+
       const phone = document.getElementById('phoneContainer');
+      phone.style.backgroundImage = '';
+      phone.style.backgroundSize = '';
+      phone.style.backgroundPosition = '';
 
       allAtmospheres.forEach(a => phone.classList.remove(`bg-${a.id}`));
       phone.classList.add(`bg-${wp}`);
@@ -2373,6 +2448,9 @@
     setupScrubber();
     renderFavorites();
     renderAllApps();
+    if (customWallpaperData) {
+      applyCustomWallpaper(customWallpaperData);
+    }
   </script>
 </body>
 </html>
