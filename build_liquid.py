@@ -414,6 +414,92 @@ html_content = f'''<!DOCTYPE html>
       background-color: rgba(0, 0, 0, 0.5) !important;
     }}
 
+    /* ================= SETTINGS SCREEN (MINIMALIST, ZERO BANNER CARDS, THEME & FONT HARMONY) ================= */
+    #settingsScreen {{
+      background: rgba(10, 14, 24, 0.55);
+      backdrop-filter: blur(36px);
+      -webkit-backdrop-filter: blur(36px);
+      color: rgba(255, 255, 255, 0.95);
+      transition: background 0.25s ease, color 0.2s ease;
+    }}
+    .theme-light #settingsScreen {{
+      background: rgba(248, 250, 252, 0.78) !important;
+      color: #0f172a !important;
+    }}
+    .theme-light:not(.font-white) #settingsScreen .settings-subtext,
+    .theme-light:not(.font-white) #settingsScreen .settings-chevron {{
+      color: rgba(15, 23, 42, 0.45) !important;
+    }}
+    .theme-light:not(.font-white) #settingsScreen .settings-divider {{
+      border-color: rgba(15, 23, 42, 0.10) !important;
+    }}
+    .theme-light:not(.font-white) #settingsScreen .settings-row:hover {{
+      background-color: rgba(15, 23, 42, 0.04);
+    }}
+    .theme-light:not(.font-white) #settingsScreen .settings-toggle-bg {{
+      background-color: rgba(15, 23, 42, 0.16);
+    }}
+    .theme-light:not(.font-white) #settingsScreen .settings-toggle-bg.active {{
+      background-color: #0f172a;
+    }}
+    .theme-light:not(.font-white) #settingsScreen .settings-toggle-knob {{
+      background-color: #ffffff;
+    }}
+
+    /* Font Black Override for Settings */
+    .font-black #settingsScreen {{
+      color: #000000 !important;
+    }}
+    .font-black #settingsScreen * {{
+      color: #000000 !important;
+    }}
+    .font-black #settingsScreen .settings-subtext,
+    .font-black #settingsScreen .settings-chevron {{
+      color: rgba(0, 0, 0, 0.45) !important;
+    }}
+    .font-black #settingsScreen .settings-divider {{
+      border-color: rgba(0, 0, 0, 0.10) !important;
+    }}
+    .font-black #settingsScreen .settings-row:hover {{
+      background-color: rgba(0, 0, 0, 0.04);
+    }}
+    .font-black #settingsScreen .settings-toggle-bg {{
+      background-color: rgba(0, 0, 0, 0.16) !important;
+    }}
+    .font-black #settingsScreen .settings-toggle-bg.active {{
+      background-color: #000000 !important;
+    }}
+    .font-black #settingsScreen .settings-toggle-knob {{
+      background-color: #ffffff !important;
+    }}
+
+    /* Font White Override for Settings */
+    .font-white #settingsScreen {{
+      color: #ffffff !important;
+    }}
+    .font-white #settingsScreen * {{
+      color: #ffffff !important;
+    }}
+    .font-white #settingsScreen .settings-subtext,
+    .font-white #settingsScreen .settings-chevron {{
+      color: rgba(255, 255, 255, 0.45) !important;
+    }}
+    .font-white #settingsScreen .settings-divider {{
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }}
+    .font-white #settingsScreen .settings-row:hover {{
+      background-color: rgba(255, 255, 255, 0.05);
+    }}
+    .font-white #settingsScreen .settings-toggle-bg {{
+      background-color: rgba(255, 255, 255, 0.20) !important;
+    }}
+    .font-white #settingsScreen .settings-toggle-bg.active {{
+      background-color: #ffffff !important;
+    }}
+    .font-white #settingsScreen .settings-toggle-knob {{
+      background-color: #000000 !important;
+    }}
+
     /* ================= CLEAR GLASS TEXT APPS (MINIMALIST, ZERO CARDS, RAZOR-SHARP) ================= */
     .water-drop-app-text {{
       position: relative;
@@ -666,187 +752,335 @@ html_content = f'''<!DOCTYPE html>
 
     </div>
 
-    <!-- ================= SETTINGS SCREEN ================= -->
-    <div id="settingsScreen" class="hidden absolute inset-0 z-40 flex flex-col pt-8 pb-5 px-5 bg-black/85 backdrop-blur-3xl text-white">
-      <div class="flex items-center justify-between pb-3 border-b border-white/15">
-        <div class="text-[15px] font-medium tracking-wide lowercase">launcher settings</div>
-        <button onclick="goHome()" class="text-xs text-white/70 hover:text-white font-medium lowercase">done</button>
+    <!-- ================= SETTINGS SCREEN (MINIMALIST ZERO-CARD DESIGN) ================= -->
+    <div id="settingsScreen" class="hidden absolute inset-0 z-40 flex flex-col pt-8 pb-5 px-6">
+      
+      <!-- 1. ROOT VIEW -->
+      <div id="settingsViewMain" class="flex-1 flex flex-col">
+        <!-- Header -->
+        <div class="flex items-center justify-between pb-3.5 border-b border-white/10 settings-divider">
+          <div class="text-[14.5px] font-medium lowercase tracking-wide">launcher settings</div>
+          <button onclick="goHome()" class="text-[12px] font-medium lowercase opacity-70 hover:opacity-100 transition-opacity">done</button>
+        </div>
+
+        <!-- Main Categories -->
+        <div class="flex-1 overflow-y-auto hide-scrollbar pt-2 space-y-0.5">
+          <div onclick="openSettingsView('home')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[14px] font-normal lowercase">home screen</span>
+            <span class="settings-chevron text-[14px] font-light">&gt;</span>
+          </div>
+
+          <div onclick="openSettingsView('display')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[14px] font-normal lowercase">display</span>
+            <span class="settings-chevron text-[14px] font-light">&gt;</span>
+          </div>
+
+          <div onclick="openSettingsView('gestures')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[14px] font-normal lowercase">gestures</span>
+            <span class="settings-chevron text-[14px] font-light">&gt;</span>
+          </div>
+
+          <div class="py-2">
+            <div class="border-t border-white/10 settings-divider"></div>
+          </div>
+
+          <div onclick="recommendToFriend()" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[14px] font-normal lowercase">recommend to a friend</span>
+          </div>
+
+          <div onclick="openDeviceSettings()" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[14px] font-normal lowercase">device settings</span>
+          </div>
+        </div>
       </div>
 
-      <div class="flex-1 overflow-y-auto hide-scrollbar mt-4 space-y-6 text-xs text-white/80">
-        <!-- Visual Atmosphere Selection -->
-        <div>
-          <div class="text-[11px] font-medium tracking-wider text-white/40 lowercase mb-2.5">atmosphere</div>
-          <div class="space-y-1.5 max-h-56 overflow-y-auto hide-scrollbar pr-0.5">
-            <div onclick="setWallpaper('alpine')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
-              <div class="flex items-center space-x-2.5">
-                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #1e40af, #0369a1);"></div>
-                <div>
-                  <div class="font-medium lowercase text-[13px]">alpine sky</div>
-                  <div class="text-[10px] text-white/50 lowercase">radiant azure mountain sky with liquid refraction</div>
-                </div>
-              </div>
-              <span id="checkAlpine" class="text-white font-medium text-sm">✓</span>
-            </div>
-
-            <div onclick="setWallpaper('red')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
-              <div class="flex items-center space-x-2.5">
-                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #b91c1c, #450a0a);"></div>
-                <div>
-                  <div class="font-medium lowercase text-[13px]">crimson red</div>
-                  <div class="text-[10px] text-white/50 lowercase">deep ruby velvet with burning caustics</div>
-                </div>
-              </div>
-              <span id="checkRed" class="text-white font-medium text-sm hidden">✓</span>
-            </div>
-
-            <div onclick="setWallpaper('green')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
-              <div class="flex items-center space-x-2.5">
-                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #059669, #022c22);"></div>
-                <div>
-                  <div class="font-medium lowercase text-[13px]">emerald green</div>
-                  <div class="text-[10px] text-white/50 lowercase">rich botanical pine to deep malachite</div>
-                </div>
-              </div>
-              <span id="checkGreen" class="text-white font-medium text-sm hidden">✓</span>
-            </div>
-
-            <div onclick="setWallpaper('yellow')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
-              <div class="flex items-center space-x-2.5">
-                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #d97706, #451a03);"></div>
-                <div>
-                  <div class="font-medium lowercase text-[13px]">amber gold</div>
-                  <div class="text-[10px] text-white/50 lowercase">warm honey sunrise to burnished bronze</div>
-                </div>
-              </div>
-              <span id="checkYellow" class="text-white font-medium text-sm hidden">✓</span>
-            </div>
-
-            <div onclick="setWallpaper('purple')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
-              <div class="flex items-center space-x-2.5">
-                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #7c3aed, #2e1065);"></div>
-                <div>
-                  <div class="font-medium lowercase text-[13px]">amethyst purple</div>
-                  <div class="text-[10px] text-white/50 lowercase">royal deep violet to midnight plum velvet</div>
-                </div>
-              </div>
-              <span id="checkPurple" class="text-white font-medium text-sm hidden">✓</span>
-            </div>
-
-            <div onclick="setWallpaper('black')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
-              <div class="flex items-center space-x-2.5">
-                <div class="w-3.5 h-3.5 rounded-full shrink-0 border border-white/20 shadow-sm" style="background: #000000;"></div>
-                <div>
-                  <div class="font-medium lowercase text-[13px]">obsidian black</div>
-                  <div class="text-[10px] text-white/50 lowercase">pure stealth oled pitch black with subtle vignette</div>
-                </div>
-              </div>
-              <span id="checkBlack" class="text-white font-medium text-sm hidden">✓</span>
-            </div>
-
-            <div onclick="setWallpaper('white')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
-              <div class="flex items-center space-x-2.5">
-                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #ffffff, #cbd5e1);"></div>
-                <div>
-                  <div class="font-medium lowercase text-[13px]">alabaster white</div>
-                  <div class="text-[10px] text-white/50 lowercase">sculptural porcelain pearl and platinum fog</div>
-                </div>
-              </div>
-              <span id="checkWhite" class="text-white font-medium text-sm hidden">✓</span>
-            </div>
-
-            <div onclick="setWallpaper('slate')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
-              <div class="flex items-center space-x-2.5">
-                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #475569, #0f172a);"></div>
-                <div>
-                  <div class="font-medium lowercase text-[13px]">charcoal slate</div>
-                  <div class="text-[10px] text-white/50 lowercase">architectural deep graphite slate neutral</div>
-                </div>
-              </div>
-              <span id="checkSlate" class="text-white font-medium text-sm hidden">✓</span>
-            </div>
-
-            <div onclick="setWallpaper('stone')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
-              <div class="flex items-center space-x-2.5">
-                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #78716c, #1c1917);"></div>
-                <div>
-                  <div class="font-medium lowercase text-[13px]">warm stone</div>
-                  <div class="text-[10px] text-white/50 lowercase">cashmere espresso earth tone neutral</div>
-                </div>
-              </div>
-              <span id="checkStone" class="text-white font-medium text-sm hidden">✓</span>
-            </div>
-          </div>
+      <!-- 2. HOME SCREEN SUB-VIEW -->
+      <div id="settingsViewHome" class="hidden flex-1 flex flex-col">
+        <!-- Header -->
+        <div class="flex items-center justify-between pb-3.5 border-b border-white/10 settings-divider">
+          <button onclick="openSettingsView('main')" class="flex items-center space-x-1.5 text-[14px] font-medium lowercase hover:opacity-70 transition-opacity">
+            <span class="settings-chevron font-light text-base">&lt;</span>
+            <span>home screen</span>
+          </button>
+          <button onclick="goHome()" class="text-[12px] font-medium lowercase opacity-70 hover:opacity-100 transition-opacity">done</button>
         </div>
 
-        <!-- Font Color Selection (White / Black) -->
-        <div>
-          <div class="text-[11px] font-medium tracking-wider text-white/40 lowercase mb-2.5">font color</div>
-          <div class="space-y-2">
-            <div onclick="setFontColor('white')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
-              <div>
-                <div class="font-medium lowercase text-[13px]">white</div>
-                <div class="text-[10px] text-white/50 lowercase">all text, numerals, and icons in white</div>
-              </div>
-              <span id="checkFontWhite" class="text-white font-medium text-sm">✓</span>
-            </div>
+        <!-- Options -->
+        <div class="flex-1 overflow-y-auto hide-scrollbar pt-2 space-y-0.5">
+          <!-- Phone dialer shortcut -->
+          <div onclick="cycleDialerShortcut()" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] font-normal lowercase">phone dialer shortcut</span>
+            <span id="labelDialerShortcut" class="settings-subtext text-[12px] lowercase">phone</span>
+          </div>
 
-            <div onclick="setFontColor('black')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
-              <div>
-                <div class="font-medium lowercase text-[13px]">black</div>
-                <div class="text-[10px] text-white/50 lowercase">all text, numerals, and icons in black</div>
-              </div>
-              <span id="checkFontBlack" class="text-white font-medium text-sm hidden">✓</span>
+          <!-- Scanner shortcut -->
+          <div onclick="openSettingsView('scanner')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] font-normal lowercase">scanner shortcut</span>
+            <div class="flex items-center space-x-1">
+              <span id="labelScannerShortcut" class="settings-subtext text-[12px] lowercase">google pay</span>
+              <span class="settings-chevron text-[13px] font-light">&gt;</span>
             </div>
           </div>
-        </div>
 
-        <!-- Quick Pay Scanner App Selection -->
-        <div>
-          <div class="text-[11px] font-medium tracking-wider text-white/40 lowercase mb-2.5">payment scanner</div>
-          <div class="space-y-2">
-            <div onclick="setPaymentApp('gpay', 'google pay')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
-              <div>
-                <div class="font-medium lowercase text-[13px]">google pay</div>
-                <div class="text-[10px] text-white/50 lowercase">banner scan icon opens google pay directly</div>
-              </div>
-              <span id="checkPayGpay" class="text-white font-medium text-sm">✓</span>
-            </div>
+          <!-- Alarm clock app shortcut -->
+          <div onclick="cycleAlarmShortcut()" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] font-normal lowercase">alarm clock app shortcut</span>
+            <span id="labelAlarmShortcut" class="settings-subtext text-[12px] lowercase">clock</span>
+          </div>
 
-            <div onclick="setPaymentApp('phonepe', 'phonepe')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
-              <div>
-                <div class="font-medium lowercase text-[13px]">phonepe</div>
-                <div class="text-[10px] text-white/50 lowercase">banner scan icon opens phonepe scanner directly</div>
-              </div>
-              <span id="checkPayPhonepe" class="text-white font-medium text-sm hidden">✓</span>
-            </div>
+          <!-- Time format -->
+          <div onclick="toggleTimeFormat()" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] font-normal lowercase">time format</span>
+            <span id="labelTimeFormat" class="settings-subtext text-[12px] lowercase">12-hour</span>
+          </div>
 
-            <div onclick="setPaymentApp('paytm', 'paytm')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
-              <div>
-                <div class="font-medium lowercase text-[13px]">paytm</div>
-                <div class="text-[10px] text-white/50 lowercase">banner scan icon opens paytm scanner directly</div>
-              </div>
-              <span id="checkPayPaytm" class="text-white font-medium text-sm hidden">✓</span>
-            </div>
+          <!-- Date format -->
+          <div onclick="toggleDateFormat()" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] font-normal lowercase">date format</span>
+            <span id="labelDateFormat" class="settings-subtext text-[12px] lowercase">Sun, Nov 8</span>
+          </div>
 
-            <div onclick="setPaymentApp('bhim', 'bhim upi')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
-              <div>
-                <div class="font-medium lowercase text-[13px]">bhim upi</div>
-                <div class="text-[10px] text-white/50 lowercase">banner scan icon opens bhim scanner directly</div>
-              </div>
-              <span id="checkPayBhim" class="text-white font-medium text-sm hidden">✓</span>
-            </div>
+          <!-- Hidden apps -->
+          <div onclick="openHiddenAppsList()" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] font-normal lowercase">hidden apps</span>
+            <span id="labelHiddenApps" class="settings-subtext text-[12px] lowercase">0 apps</span>
+          </div>
 
-            <div onclick="setPaymentApp('system', 'system upi')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
-              <div>
-                <div class="font-medium lowercase text-[13px]">system upi (auto)</div>
-                <div class="text-[10px] text-white/50 lowercase">launches system default payment scanner intent</div>
-              </div>
-              <span id="checkPaySystem" class="text-white font-medium text-sm hidden">✓</span>
+          <!-- Automatically open keyboard -->
+          <div onclick="toggleSetting('autoKeyboard')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] font-normal lowercase">automatically open keyboard</span>
+            <div id="toggleAutoKeyboard" class="settings-toggle-bg active w-8 h-4.5 rounded-full p-0.5 flex items-center transition-colors">
+              <div id="knobAutoKeyboard" class="settings-toggle-knob w-3.5 h-3.5 rounded-full shadow-sm translate-x-3.5 transition-transform"></div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- 3. DISPLAY SUB-VIEW -->
+      <div id="settingsViewDisplay" class="hidden flex-1 flex flex-col">
+        <!-- Header -->
+        <div class="flex items-center justify-between pb-3.5 border-b border-white/10 settings-divider">
+          <button onclick="openSettingsView('main')" class="flex items-center space-x-1.5 text-[14px] font-medium lowercase hover:opacity-70 transition-opacity">
+            <span class="settings-chevron font-light text-base">&lt;</span>
+            <span>display</span>
+          </button>
+          <button onclick="goHome()" class="text-[12px] font-medium lowercase opacity-70 hover:opacity-100 transition-opacity">done</button>
+        </div>
+
+        <!-- Options -->
+        <div class="flex-1 overflow-y-auto hide-scrollbar pt-2 space-y-0.5">
+          <!-- Color theme -->
+          <div onclick="openSettingsView('theme')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] font-normal lowercase">color theme</span>
+            <div class="flex items-center space-x-1">
+              <span id="labelColorTheme" class="settings-subtext text-[12px] lowercase">alpine sky</span>
+              <span class="settings-chevron text-[13px] font-light">&gt;</span>
+            </div>
+          </div>
+
+          <!-- Font size -->
+          <div onclick="cycleFontSize()" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] font-normal lowercase">font size</span>
+            <span id="labelFontSize" class="settings-subtext text-[12px] lowercase">regular</span>
+          </div>
+
+          <!-- Automatically set matching lock screen background -->
+          <div onclick="toggleSetting('matchLockScreen')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] font-normal lowercase pr-3">automatically set matching lock screen background</span>
+            <div id="toggleMatchLockScreen" class="settings-toggle-bg active shrink-0 w-8 h-4.5 rounded-full p-0.5 flex items-center transition-colors">
+              <div id="knobMatchLockScreen" class="settings-toggle-knob w-3.5 h-3.5 rounded-full shadow-sm translate-x-3.5 transition-transform"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. GESTURES SUB-VIEW -->
+      <div id="settingsViewGestures" class="hidden flex-1 flex flex-col">
+        <!-- Header -->
+        <div class="flex items-center justify-between pb-3.5 border-b border-white/10 settings-divider">
+          <button onclick="openSettingsView('main')" class="flex items-center space-x-1.5 text-[14px] font-medium lowercase hover:opacity-70 transition-opacity">
+            <span class="settings-chevron font-light text-base">&lt;</span>
+            <span>gestures</span>
+          </button>
+          <button onclick="goHome()" class="text-[12px] font-medium lowercase opacity-70 hover:opacity-100 transition-opacity">done</button>
+        </div>
+
+        <!-- Options -->
+        <div class="flex-1 overflow-y-auto hide-scrollbar pt-2 space-y-0.5">
+          <!-- Swipe left to open search -->
+          <div onclick="toggleSetting('swipeSearch')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] font-normal lowercase">swipe left to open search</span>
+            <div id="toggleSwipeSearch" class="settings-toggle-bg active w-8 h-4.5 rounded-full p-0.5 flex items-center transition-colors">
+              <div id="knobSwipeSearch" class="settings-toggle-knob w-3.5 h-3.5 rounded-full shadow-sm translate-x-3.5 transition-transform"></div>
+            </div>
+          </div>
+
+          <!-- Swipe right to open to do list -->
+          <div onclick="toggleSetting('swipeTodo')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] font-normal lowercase">swipe right to open to do list</span>
+            <div id="toggleSwipeTodo" class="settings-toggle-bg active w-8 h-4.5 rounded-full p-0.5 flex items-center transition-colors">
+              <div id="knobSwipeTodo" class="settings-toggle-knob w-3.5 h-3.5 rounded-full shadow-sm translate-x-3.5 transition-transform"></div>
+            </div>
+          </div>
+
+          <!-- Double-tap to lock -->
+          <div onclick="toggleSetting('doubleTapLock')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] font-normal lowercase">double-tap to lock</span>
+            <div id="toggleDoubleTapLock" class="settings-toggle-bg active w-8 h-4.5 rounded-full p-0.5 flex items-center transition-colors">
+              <div id="knobDoubleTapLock" class="settings-toggle-knob w-3.5 h-3.5 rounded-full shadow-sm translate-x-3.5 transition-transform"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. COLOR THEME SUB-VIEW -->
+      <div id="settingsViewTheme" class="hidden flex-1 flex flex-col">
+        <!-- Header -->
+        <div class="flex items-center justify-between pb-3.5 border-b border-white/10 settings-divider">
+          <button onclick="openSettingsView('display')" class="flex items-center space-x-1.5 text-[14px] font-medium lowercase hover:opacity-70 transition-opacity">
+            <span class="settings-chevron font-light text-base">&lt;</span>
+            <span>color theme</span>
+          </button>
+          <button onclick="goHome()" class="text-[12px] font-medium lowercase opacity-70 hover:opacity-100 transition-opacity">done</button>
+        </div>
+
+        <!-- Atmospheres & Font Color -->
+        <div class="flex-1 overflow-y-auto hide-scrollbar pt-2 space-y-4">
+          <div>
+            <div class="text-[11px] font-medium tracking-wider settings-subtext lowercase mb-1.5 px-2">atmosphere</div>
+            <div class="space-y-0.5">
+              <!-- 9 Atmospheres in clean simple rows -->
+              <div onclick="setWallpaper('alpine')" class="settings-row flex items-center justify-between py-2.5 px-2 rounded-xl cursor-pointer transition-colors">
+                <div class="flex items-center space-x-2.5">
+                  <span class="w-3 h-3 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #1e40af, #0369a1);"></span>
+                  <span class="text-[13.5px] lowercase">alpine sky</span>
+                </div>
+                <span id="checkAlpine" class="text-sm font-medium">✓</span>
+              </div>
+
+              <div onclick="setWallpaper('red')" class="settings-row flex items-center justify-between py-2.5 px-2 rounded-xl cursor-pointer transition-colors">
+                <div class="flex items-center space-x-2.5">
+                  <span class="w-3 h-3 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #b91c1c, #450a0a);"></span>
+                  <span class="text-[13.5px] lowercase">crimson red</span>
+                </div>
+                <span id="checkRed" class="text-sm font-medium hidden">✓</span>
+              </div>
+
+              <div onclick="setWallpaper('green')" class="settings-row flex items-center justify-between py-2.5 px-2 rounded-xl cursor-pointer transition-colors">
+                <div class="flex items-center space-x-2.5">
+                  <span class="w-3 h-3 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #059669, #022c22);"></span>
+                  <span class="text-[13.5px] lowercase">emerald green</span>
+                </div>
+                <span id="checkGreen" class="text-sm font-medium hidden">✓</span>
+              </div>
+
+              <div onclick="setWallpaper('yellow')" class="settings-row flex items-center justify-between py-2.5 px-2 rounded-xl cursor-pointer transition-colors">
+                <div class="flex items-center space-x-2.5">
+                  <span class="w-3 h-3 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #d97706, #451a03);"></span>
+                  <span class="text-[13.5px] lowercase">amber gold</span>
+                </div>
+                <span id="checkYellow" class="text-sm font-medium hidden">✓</span>
+              </div>
+
+              <div onclick="setWallpaper('purple')" class="settings-row flex items-center justify-between py-2.5 px-2 rounded-xl cursor-pointer transition-colors">
+                <div class="flex items-center space-x-2.5">
+                  <span class="w-3 h-3 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #7c3aed, #2e1065);"></span>
+                  <span class="text-[13.5px] lowercase">amethyst purple</span>
+                </div>
+                <span id="checkPurple" class="text-sm font-medium hidden">✓</span>
+              </div>
+
+              <div onclick="setWallpaper('black')" class="settings-row flex items-center justify-between py-2.5 px-2 rounded-xl cursor-pointer transition-colors">
+                <div class="flex items-center space-x-2.5">
+                  <span class="w-3 h-3 rounded-full shrink-0 border border-white/20 shadow-sm" style="background: #000000;"></span>
+                  <span class="text-[13.5px] lowercase">obsidian black</span>
+                </div>
+                <span id="checkBlack" class="text-sm font-medium hidden">✓</span>
+              </div>
+
+              <div onclick="setWallpaper('white')" class="settings-row flex items-center justify-between py-2.5 px-2 rounded-xl cursor-pointer transition-colors">
+                <div class="flex items-center space-x-2.5">
+                  <span class="w-3 h-3 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #ffffff, #cbd5e1);"></span>
+                  <span class="text-[13.5px] lowercase">alabaster white</span>
+                </div>
+                <span id="checkWhite" class="text-sm font-medium hidden">✓</span>
+              </div>
+
+              <div onclick="setWallpaper('slate')" class="settings-row flex items-center justify-between py-2.5 px-2 rounded-xl cursor-pointer transition-colors">
+                <div class="flex items-center space-x-2.5">
+                  <span class="w-3 h-3 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #475569, #0f172a);"></span>
+                  <span class="text-[13.5px] lowercase">charcoal slate</span>
+                </div>
+                <span id="checkSlate" class="text-sm font-medium hidden">✓</span>
+              </div>
+
+              <div onclick="setWallpaper('stone')" class="settings-row flex items-center justify-between py-2.5 px-2 rounded-xl cursor-pointer transition-colors">
+                <div class="flex items-center space-x-2.5">
+                  <span class="w-3 h-3 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #78716c, #1c1917);"></span>
+                  <span class="text-[13.5px] lowercase">warm stone</span>
+                </div>
+                <span id="checkStone" class="text-sm font-medium hidden">✓</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-white/10 settings-divider pt-3">
+            <div class="text-[11px] font-medium tracking-wider settings-subtext lowercase mb-1.5 px-2">font color</div>
+            <div class="space-y-0.5">
+              <div onclick="setFontColor('white')" class="settings-row flex items-center justify-between py-2.5 px-2 rounded-xl cursor-pointer transition-colors">
+                <span class="text-[13.5px] lowercase">white</span>
+                <span id="checkFontWhite" class="text-sm font-medium">✓</span>
+              </div>
+
+              <div onclick="setFontColor('black')" class="settings-row flex items-center justify-between py-2.5 px-2 rounded-xl cursor-pointer transition-colors">
+                <span class="text-[13.5px] lowercase">black</span>
+                <span id="checkFontBlack" class="text-sm font-medium hidden">✓</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. SCANNER SHORTCUT SUB-VIEW -->
+      <div id="settingsViewScanner" class="hidden flex-1 flex flex-col">
+        <!-- Header -->
+        <div class="flex items-center justify-between pb-3.5 border-b border-white/10 settings-divider">
+          <button onclick="openSettingsView('home')" class="flex items-center space-x-1.5 text-[14px] font-medium lowercase hover:opacity-70 transition-opacity">
+            <span class="settings-chevron font-light text-base">&lt;</span>
+            <span>scanner shortcut</span>
+          </button>
+          <button onclick="goHome()" class="text-[12px] font-medium lowercase opacity-70 hover:opacity-100 transition-opacity">done</button>
+        </div>
+
+        <!-- Scanner List -->
+        <div class="flex-1 overflow-y-auto hide-scrollbar pt-2 space-y-0.5">
+          <div onclick="setPaymentApp('gpay', 'google pay')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] lowercase">google pay</span>
+            <span id="checkPayGpay" class="text-sm font-medium">✓</span>
+          </div>
+
+          <div onclick="setPaymentApp('phonepe', 'phonepe')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] lowercase">phonepe</span>
+            <span id="checkPayPhonepe" class="text-sm font-medium hidden">✓</span>
+          </div>
+
+          <div onclick="setPaymentApp('paytm', 'paytm')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] lowercase">paytm</span>
+            <span id="checkPayPaytm" class="text-sm font-medium hidden">✓</span>
+          </div>
+
+          <div onclick="setPaymentApp('bhim', 'bhim upi')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] lowercase">bhim upi</span>
+            <span id="checkPayBhim" class="text-sm font-medium hidden">✓</span>
+          </div>
+
+          <div onclick="setPaymentApp('system', 'system upi')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] lowercase">system upi (auto)</span>
+            <span id="checkPaySystem" class="text-sm font-medium hidden">✓</span>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ================= MINDFUL DELAY INTERCEPTOR (BREATHING CIRCLE) ================= -->
@@ -944,20 +1178,40 @@ html_content = f'''<!DOCTYPE html>
     let selectedApp = null;
     let mindfulTarget = null;
     let timerInterval = null;
+    let is24Hour = false;
+    let dateFormatIdx = 0;
+
+    const dateFormats = [
+      (d) => d.toLocaleDateString('en-US', {{ weekday: 'short', month: 'short', day: 'numeric' }}),
+      (d) => d.toLocaleDateString('en-US', {{ weekday: 'long', day: 'numeric', month: 'short' }}),
+      (d) => d.toLocaleDateString('en-GB')
+    ];
+
+    function updateDateHeader(now = new Date()) {{
+      const headerSpan = document.getElementById('dateHeader')?.querySelector('span:first-child');
+      if (headerSpan) headerSpan.textContent = dateFormats[dateFormatIdx](now);
+      const labelDate = document.getElementById('labelDateFormat');
+      if (labelDate) labelDate.textContent = dateFormats[dateFormatIdx](now);
+    }}
 
     // Clock
     function updateClock() {{
       const now = new Date();
-      const h = String(now.getHours()).padStart(2, '0');
+      let hNum = now.getHours();
+      if (!is24Hour) {{
+        hNum = hNum % 12 || 12;
+      }}
+      const h = String(hNum);
       const m = String(now.getMinutes()).padStart(2, '0');
       
       const statusClock = document.getElementById('statusClock');
       if (statusClock) statusClock.textContent = `${{h}}:${{m}}`;
-      document.getElementById('clockHours').textContent = h;
-      document.getElementById('clockMinutes').textContent = m;
+      const clockHours = document.getElementById('clockHours');
+      const clockMinutes = document.getElementById('clockMinutes');
+      if (clockHours) clockHours.textContent = h;
+      if (clockMinutes) clockMinutes.textContent = m;
 
-      const options = {{ weekday: 'short', month: 'short', day: 'numeric' }};
-      document.getElementById('dateHeader').querySelector('span:first-child').textContent = `${{now.toLocaleDateString('en-US', options)}}`;
+      updateDateHeader(now);
     }}
     setInterval(updateClock, 1000);
     updateClock();
@@ -1017,6 +1271,9 @@ html_content = f'''<!DOCTYPE html>
         phone.classList.remove('font-black');
         phone.classList.add('font-white');
       }}
+
+      const labelColor = document.getElementById('labelColorTheme');
+      if (labelColor) labelColor.textContent = currentAtmo.name;
 
       renderFavorites();
       renderAllApps();
@@ -1212,6 +1469,7 @@ html_content = f'''<!DOCTYPE html>
     function goHome() {{
       if (!document.getElementById('settingsScreen').classList.contains('hidden')) {{
         document.getElementById('settingsScreen').classList.add('hidden');
+        openSettingsView('main');
         return;
       }}
       if (!isDrawerOpen) return;
@@ -1253,6 +1511,96 @@ html_content = f'''<!DOCTYPE html>
       document.getElementById('clearSearchBtn').classList.add('hidden');
     }}
 
+    // ================= LAUNCHER SETTINGS STATE & LOGIC =================
+    const settingsState = {{
+      autoKeyboard: true,
+      matchLockScreen: true,
+      swipeSearch: true,
+      swipeTodo: true,
+      doubleTapLock: true
+    }};
+
+    function openSettingsView(viewName) {{
+      const views = ['main', 'home', 'display', 'gestures', 'theme', 'scanner'];
+      views.forEach(v => {{
+        const el = document.getElementById(`settingsView${{v.charAt(0).toUpperCase() + v.slice(1)}}`);
+        if (el) el.classList.toggle('hidden', v !== viewName);
+      }});
+    }}
+
+    function toggleSetting(key) {{
+      settingsState[key] = !settingsState[key];
+      const val = settingsState[key];
+      const toggleEl = document.getElementById(`toggle${{key.charAt(0).toUpperCase() + key.slice(1)}}`);
+      const knobEl = document.getElementById(`knob${{key.charAt(0).toUpperCase() + key.slice(1)}}`);
+      
+      if (toggleEl && knobEl) {{
+        if (val) {{
+          toggleEl.classList.add('active');
+          knobEl.style.transform = 'translateX(14px)';
+        }} else {{
+          toggleEl.classList.remove('active');
+          knobEl.style.transform = 'translateX(0px)';
+        }}
+      }}
+      const titles = {{
+        autoKeyboard: 'automatically open keyboard',
+        matchLockScreen: 'lock screen background',
+        swipeSearch: 'swipe left to open search',
+        swipeTodo: 'swipe right to open to do list',
+        doubleTapLock: 'double-tap to lock'
+      }};
+      showToast(`${{titles[key] || key}}: ${{val ? 'enabled' : 'disabled'}}`);
+    }}
+
+    function toggleTimeFormat() {{
+      is24Hour = !is24Hour;
+      const label = document.getElementById('labelTimeFormat');
+      if (label) label.textContent = is24Hour ? '24-hour' : '12-hour';
+      updateClock();
+      showToast(`time format: ${{is24Hour ? '24-hour' : '12-hour'}}`);
+    }}
+
+    function toggleDateFormat() {{
+      dateFormatIdx = (dateFormatIdx + 1) % dateFormats.length;
+      updateDateHeader();
+      showToast('date format updated');
+    }}
+
+    let fontSizeIdx = 0;
+    const fontSizes = ['regular', 'small', 'large'];
+    function cycleFontSize() {{
+      fontSizeIdx = (fontSizeIdx + 1) % fontSizes.length;
+      const size = fontSizes[fontSizeIdx];
+      const label = document.getElementById('labelFontSize');
+      if (label) label.textContent = size;
+      showToast(`font size: ${{size}}`);
+    }}
+
+    function cycleDialerShortcut() {{
+      showToast('dialer shortcut: phone');
+    }}
+
+    function cycleAlarmShortcut() {{
+      showToast('alarm clock app shortcut: clock');
+    }}
+
+    function openHiddenAppsList() {{
+      const hidden = apps.filter(a => a.hidden);
+      showToast(`hidden apps: ${{hidden.length}} apps`);
+    }}
+
+    function recommendToFriend() {{
+      if (navigator.clipboard) {{
+        navigator.clipboard.writeText('https://meoslauncher.app');
+      }}
+      showToast('link copied to clipboard');
+    }}
+
+    function openDeviceSettings() {{
+      showToast('opening device settings');
+    }}
+
     let currentFontColor = 'white';
 
     function setFontColor(color) {{
@@ -1284,11 +1632,14 @@ html_content = f'''<!DOCTYPE html>
       selectedPaymentApp = key;
       selectedPaymentAppName = name;
 
-      document.getElementById('checkPayGpay').classList.toggle('hidden', key !== 'gpay');
-      document.getElementById('checkPayPhonepe').classList.toggle('hidden', key !== 'phonepe');
-      document.getElementById('checkPayPaytm').classList.toggle('hidden', key !== 'paytm');
-      document.getElementById('checkPayBhim').classList.toggle('hidden', key !== 'bhim');
-      document.getElementById('checkPaySystem').classList.toggle('hidden', key !== 'system');
+      const pApps = ['gpay', 'phonepe', 'paytm', 'bhim', 'system'];
+      pApps.forEach(k => {{
+        const c = document.getElementById(`checkPay${{k.charAt(0).toUpperCase() + k.slice(1)}}`);
+        if (c) c.classList.toggle('hidden', k !== key);
+      }});
+
+      const labelScanner = document.getElementById('labelScannerShortcut');
+      if (labelScanner) labelScanner.textContent = name;
 
       showToast(`scanner: ${{name}}`);
     }}
@@ -1301,6 +1652,7 @@ html_content = f'''<!DOCTYPE html>
     function closeUpiScanner() {{}}
 
     function openSettings() {{
+      openSettingsView('main');
       document.getElementById('settingsScreen').classList.remove('hidden');
     }}
 
