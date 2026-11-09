@@ -261,6 +261,26 @@ class MainActivity : ComponentActivity() {
         }
 
         @JavascriptInterface
+        fun openBrowser() {
+            try {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com")).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                try {
+                    val chromeIntent = context.packageManager.getLaunchIntentForPackage("com.android.chrome")
+                    if (chromeIntent != null) {
+                        chromeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(chromeIntent)
+                    }
+                } catch (e2: Exception) {
+                    e2.printStackTrace()
+                }
+            }
+        }
+
+        @JavascriptInterface
         fun openUpiScanner(target: String?) {
             try {
                 val pkg = target ?: "gpay"

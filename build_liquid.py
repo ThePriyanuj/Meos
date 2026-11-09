@@ -1043,11 +1043,11 @@ html_content = f'''<!DOCTYPE html>
             </div>
           </div>
 
-          <!-- Swipe right to open to do list -->
-          <div onclick="toggleSetting('swipeTodo')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
-            <span class="text-[13.5px] font-normal lowercase">swipe right to open to do list</span>
-            <div id="toggleSwipeTodo" class="settings-toggle-bg active w-8 h-4.5 rounded-full p-0.5 flex items-center transition-colors">
-              <div id="knobSwipeTodo" class="settings-toggle-knob w-3.5 h-3.5 rounded-full shadow-sm translate-x-3.5 transition-transform"></div>
+          <!-- Swipe right to open web browser -->
+          <div onclick="toggleSetting('swipeBrowser')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] font-normal lowercase">swipe right to open web browser</span>
+            <div id="toggleSwipeBrowser" class="settings-toggle-bg active w-8 h-4.5 rounded-full p-0.5 flex items-center transition-colors">
+              <div id="knobSwipeBrowser" class="settings-toggle-knob w-3.5 h-3.5 rounded-full shadow-sm translate-x-3.5 transition-transform"></div>
             </div>
           </div>
 
@@ -1872,7 +1872,7 @@ html_content = f'''<!DOCTYPE html>
       autoKeyboard: true,
       matchLockScreen: true,
       swipeSearch: true,
-      swipeTodo: true,
+      swipeBrowser: true,
       doubleTapLock: true
     }};
 
@@ -1906,7 +1906,7 @@ html_content = f'''<!DOCTYPE html>
         autoKeyboard: 'automatically open keyboard',
         matchLockScreen: 'matching lock screen background',
         swipeSearch: 'swipe left to open search',
-        swipeTodo: 'swipe right to open to do list',
+        swipeBrowser: 'swipe right to open web browser',
         doubleTapLock: 'double-tap to lock'
       }};
       showToast(`${{titles[key] || key}}: ${{val ? 'enabled' : 'disabled'}}`);
@@ -2179,6 +2179,15 @@ html_content = f'''<!DOCTYPE html>
         window.Android.openDeviceSettings();
       }} else {{
         showToast('opening device settings');
+      }}
+    }}
+
+    function openWebBrowser() {{
+      if (window.Android && window.Android.openBrowser) {{
+        window.Android.openBrowser();
+      }} else {{
+        window.open('https://www.google.com', '_blank');
+        showToast('opening web browser...');
       }}
     }}
 
@@ -2479,9 +2488,9 @@ html_content = f'''<!DOCTYPE html>
               }}, 60);
             }}
           }} else if (dragX >= THRESHOLD) {{
-            // 3. RIGHT SWIPE -> Open To Do List (if enabled)
-            if (settingsState.swipeTodo) {{
-              openTodoScreen();
+            // 3. RIGHT SWIPE -> Open Web Browser (if enabled)
+            if (settingsState.swipeBrowser) {{
+              openWebBrowser();
             }}
           }}
         }}
@@ -2565,9 +2574,9 @@ html_content = f'''<!DOCTYPE html>
               const input = document.getElementById('searchInput');
               if (input) {{ input.focus(); input.select(); }}
             }}, 60);
-          }} else if (e.deltaX < -25 && settingsState.swipeTodo) {{
-            // Swiped right -> Open To Do List
-            openTodoScreen();
+          }} else if (e.deltaX < -25 && settingsState.swipeBrowser) {{
+            // Swiped right -> Open Web Browser
+            openWebBrowser();
           }}
         }}
       }} else if (isDrawerOpen) {{
