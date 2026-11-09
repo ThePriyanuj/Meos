@@ -848,9 +848,12 @@ html_content = f'''<!DOCTYPE html>
         <!-- Options -->
         <div class="flex-1 overflow-y-auto hide-scrollbar pt-2 space-y-0.5">
           <!-- Phone dialer shortcut -->
-          <div onclick="cycleDialerShortcut()" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+          <div onclick="openSettingsView('dialer')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
             <span class="text-[13.5px] font-normal lowercase">phone dialer shortcut</span>
-            <span id="labelDialerShortcut" class="settings-subtext text-[12px] lowercase">phone</span>
+            <div class="flex items-center space-x-1">
+              <span id="labelDialerShortcut" class="settings-subtext text-[12px] lowercase">phone</span>
+              <span class="settings-chevron text-[13px] font-light">&gt;</span>
+            </div>
           </div>
 
           <!-- Scanner shortcut -->
@@ -863,9 +866,12 @@ html_content = f'''<!DOCTYPE html>
           </div>
 
           <!-- Clock shortcut -->
-          <div onclick="cycleClockShortcut()" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+          <div onclick="openSettingsView('clock')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
             <span class="text-[13.5px] font-normal lowercase">clock shortcut</span>
-            <span id="labelClockShortcut" class="settings-subtext text-[12px] lowercase">clock</span>
+            <div class="flex items-center space-x-1">
+              <span id="labelClockShortcut" class="settings-subtext text-[12px] lowercase">clock</span>
+              <span class="settings-chevron text-[13px] font-light">&gt;</span>
+            </div>
           </div>
 
           <!-- Time format -->
@@ -1135,6 +1141,81 @@ html_content = f'''<!DOCTYPE html>
         <!-- Hidden Apps List -->
         <div id="hiddenAppsList" class="flex-1 overflow-y-auto hide-scrollbar pt-2 space-y-1">
           <!-- Populated by renderHiddenAppsList() -->
+        </div>
+      </div>
+
+      <!-- 8. PHONE DIALER SHORTCUT SUB-VIEW -->
+      <div id="settingsViewDialer" class="hidden flex-1 flex flex-col">
+        <!-- Header -->
+        <div class="flex items-center justify-between pb-3.5 border-b border-white/10 settings-divider">
+          <button onclick="openSettingsView('home')" class="flex items-center space-x-1.5 text-[14px] font-medium lowercase hover:opacity-70 transition-opacity">
+            <span class="settings-chevron font-light text-base">&lt;</span>
+            <span>phone dialer shortcut</span>
+          </button>
+          <button onclick="goHome()" class="text-[12px] font-medium lowercase opacity-70 hover:opacity-100 transition-opacity">done</button>
+        </div>
+
+        <!-- Options List -->
+        <div class="flex-1 overflow-y-auto hide-scrollbar pt-2 space-y-0.5">
+          <div onclick="setDialerApp('phone', 'phone')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] lowercase">phone</span>
+            <span id="checkDialerPhone" class="text-sm font-medium">✓</span>
+          </div>
+
+          <div onclick="setDialerApp('google_dialer', 'google dialer')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] lowercase">google dialer</span>
+            <span id="checkDialerGoogle" class="text-sm font-medium hidden">✓</span>
+          </div>
+
+          <div onclick="setDialerApp('whatsapp_call', 'whatsapp call')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] lowercase">whatsapp call</span>
+            <span id="checkDialerWhatsapp" class="text-sm font-medium hidden">✓</span>
+          </div>
+
+          <div onclick="setDialerApp('contacts', 'contacts')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] lowercase">contacts</span>
+            <span id="checkDialerContacts" class="text-sm font-medium hidden">✓</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9. CLOCK SHORTCUT SUB-VIEW -->
+      <div id="settingsViewClock" class="hidden flex-1 flex flex-col">
+        <!-- Header -->
+        <div class="flex items-center justify-between pb-3.5 border-b border-white/10 settings-divider">
+          <button onclick="openSettingsView('home')" class="flex items-center space-x-1.5 text-[14px] font-medium lowercase hover:opacity-70 transition-opacity">
+            <span class="settings-chevron font-light text-base">&lt;</span>
+            <span>clock shortcut</span>
+          </button>
+          <button onclick="goHome()" class="text-[12px] font-medium lowercase opacity-70 hover:opacity-100 transition-opacity">done</button>
+        </div>
+
+        <!-- Options List -->
+        <div class="flex-1 overflow-y-auto hide-scrollbar pt-2 space-y-0.5">
+          <div onclick="setClockApp('clock', 'clock')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] lowercase">clock</span>
+            <span id="checkClockClock" class="text-sm font-medium">✓</span>
+          </div>
+
+          <div onclick="setClockApp('google_clock', 'google clock')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] lowercase">google clock</span>
+            <span id="checkClockGoogle" class="text-sm font-medium hidden">✓</span>
+          </div>
+
+          <div onclick="setClockApp('alarm', 'alarm')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] lowercase">alarm</span>
+            <span id="checkClockAlarm" class="text-sm font-medium hidden">✓</span>
+          </div>
+
+          <div onclick="setClockApp('timer', 'timer')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] lowercase">timer</span>
+            <span id="checkClockTimer" class="text-sm font-medium hidden">✓</span>
+          </div>
+
+          <div onclick="setClockApp('stopwatch', 'stopwatch')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] lowercase">stopwatch</span>
+            <span id="checkClockStopwatch" class="text-sm font-medium hidden">✓</span>
+          </div>
         </div>
       </div>
 
@@ -1610,7 +1691,7 @@ html_content = f'''<!DOCTYPE html>
     }};
 
     function openSettingsView(viewName) {{
-      const views = ['main', 'home', 'display', 'gestures', 'theme', 'scanner', 'hidden'];
+      const views = ['main', 'home', 'display', 'gestures', 'theme', 'scanner', 'hidden', 'dialer', 'clock'];
       views.forEach(v => {{
         const el = document.getElementById(`settingsView${{v.charAt(0).toUpperCase() + v.slice(1)}}`);
         if (el) el.classList.toggle('hidden', v !== viewName);
@@ -1672,28 +1753,34 @@ html_content = f'''<!DOCTYPE html>
       showToast(`font size: ${{size}}`);
     }}
 
-    const dialerAppsList = ['phone', 'google dialer', 'whatsapp call', 'contacts'];
-    let dialerAppIdx = 0;
-    function cycleDialerShortcut() {{
-      dialerAppIdx = (dialerAppIdx + 1) % dialerAppsList.length;
-      settingsState.dialerApp = dialerAppsList[dialerAppIdx];
+    function setDialerApp(key, name) {{
+      settingsState.dialerApp = name;
+      settingsState.dialerKey = key;
+      const dApps = ['Phone', 'Google', 'Whatsapp', 'Contacts'];
+      dApps.forEach(k => {{
+        const c = document.getElementById(`checkDialer${{k}}`);
+        if (c) c.classList.toggle('hidden', !key.toLowerCase().includes(k.toLowerCase()));
+      }});
       const label = document.getElementById('labelDialerShortcut');
-      if (label) label.textContent = settingsState.dialerApp;
-      showToast(`dialer shortcut: ${{settingsState.dialerApp}}`);
+      if (label) label.textContent = name;
+      showToast(`dialer shortcut: ${{name}}`);
     }}
 
     function quickDial() {{
       showToast(`opening ${{settingsState.dialerApp || 'phone'}}...`);
     }}
 
-    const clockAppsList = ['clock', 'google clock', 'alarm', 'timer'];
-    let clockAppIdx = 0;
-    function cycleClockShortcut() {{
-      clockAppIdx = (clockAppIdx + 1) % clockAppsList.length;
-      settingsState.clockApp = clockAppsList[clockAppIdx];
+    function setClockApp(key, name) {{
+      settingsState.clockApp = name;
+      settingsState.clockKey = key;
+      const cApps = ['Clock', 'Google', 'Alarm', 'Timer', 'Stopwatch'];
+      cApps.forEach(k => {{
+        const c = document.getElementById(`checkClock${{k}}`);
+        if (c) c.classList.toggle('hidden', !key.toLowerCase().includes(k.toLowerCase()));
+      }});
       const label = document.getElementById('labelClockShortcut');
-      if (label) label.textContent = settingsState.clockApp;
-      showToast(`clock shortcut: ${{settingsState.clockApp}}`);
+      if (label) label.textContent = name;
+      showToast(`clock shortcut: ${{name}}`);
     }}
 
     function openClockApp() {{

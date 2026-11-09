@@ -75,6 +75,8 @@ fun SettingsScreen(
     var is24Hour by remember { mutableStateOf(false) }
     var dateFormatIdx by remember { mutableStateOf(0) }
     var fontSizeIdx by remember { mutableStateOf(0) }
+    var selectedDialerApp by remember { mutableStateOf("phone") }
+    var selectedClockApp by remember { mutableStateOf("clock") }
 
     val dateFormats = listOf("Sun, Nov 8", "Sunday, 8 Nov", "08/11/2026")
     val fontSizes = listOf("regular", "small", "large")
@@ -108,6 +110,8 @@ fun SettingsScreen(
                     "gestures" -> "gestures"
                     "theme" -> "color theme"
                     "scanner" -> "scanner shortcut"
+                    "dialer" -> "phone dialer shortcut"
+                    "clock" -> "clock shortcut"
                     else -> "launcher settings"
                 }
                 TopAppBar(
@@ -124,7 +128,7 @@ fun SettingsScreen(
                                 "main" -> onBack()
                                 "home", "display", "gestures" -> currentSection = "main"
                                 "theme" -> currentSection = "display"
-                                "scanner" -> currentSection = "home"
+                                "scanner", "dialer", "clock" -> currentSection = "home"
                                 else -> currentSection = "main"
                             }
                         }) {
@@ -192,14 +196,14 @@ fun SettingsScreen(
                     }
 
                     "home" -> {
-                        SettingsInfoRow("phone dialer shortcut", "phone", contentColor, subtextColor) {
-                            Toast.makeText(context, "dialer shortcut: phone", Toast.LENGTH_SHORT).show()
+                        SettingsNavRow("phone dialer shortcut", selectedDialerApp, contentColor, subtextColor) {
+                            currentSection = "dialer"
                         }
                         SettingsNavRow("scanner shortcut", "google pay", contentColor, subtextColor) {
                             currentSection = "scanner"
                         }
-                        SettingsInfoRow("clock shortcut", "clock", contentColor, subtextColor) {
-                            Toast.makeText(context, "clock shortcut: clock", Toast.LENGTH_SHORT).show()
+                        SettingsNavRow("clock shortcut", selectedClockApp, contentColor, subtextColor) {
+                            currentSection = "clock"
                         }
                         SettingsInfoRow("time format", if (is24Hour) "24-hour" else "12-hour", contentColor, subtextColor) {
                             is24Hour = !is24Hour
@@ -304,6 +308,36 @@ fun SettingsScreen(
                                 isSelected = selectedPaymentApp == pkg,
                                 contentColor = contentColor,
                                 onClick = { onPaymentAppSelect(pkg) }
+                            )
+                        }
+                    }
+
+                    "dialer" -> {
+                        val dialerOptions = listOf("phone", "google dialer", "whatsapp call", "contacts")
+                        dialerOptions.forEach { name ->
+                            OptionRow(
+                                title = name,
+                                isSelected = selectedDialerApp == name,
+                                contentColor = contentColor,
+                                onClick = {
+                                    selectedDialerApp = name
+                                    Toast.makeText(context, "dialer shortcut: $name", Toast.LENGTH_SHORT).show()
+                                }
+                            )
+                        }
+                    }
+
+                    "clock" -> {
+                        val clockOptions = listOf("clock", "google clock", "alarm", "timer", "stopwatch")
+                        clockOptions.forEach { name ->
+                            OptionRow(
+                                title = name,
+                                isSelected = selectedClockApp == name,
+                                contentColor = contentColor,
+                                onClick = {
+                                    selectedClockApp = name
+                                    Toast.makeText(context, "clock shortcut: $name", Toast.LENGTH_SHORT).show()
+                                }
                             )
                         }
                     }
