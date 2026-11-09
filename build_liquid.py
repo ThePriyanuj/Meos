@@ -58,6 +58,14 @@ html_content = f'''<!DOCTYPE html>
     /* ================= WALLPAPERS & DYNAMIC WATER REFRACTION ================= */
     :root {{
       --wp-alpine: url('data:image/jpeg;base64,{alpine_b64}');
+      --wp-red: linear-gradient(160deg, #7f1d1d 0%, #450a0a 38%, #200407 72%, #0a0102 100%);
+      --wp-green: linear-gradient(160deg, #064e3b 0%, #032b21 38%, #011b14 72%, #010c08 100%);
+      --wp-yellow: linear-gradient(160deg, #92400e 0%, #712b08 35%, #431702 70%, #1c0a00 100%);
+      --wp-purple: linear-gradient(160deg, #581c87 0%, #3b0764 38%, #20023a 72%, #0c0018 100%);
+      --wp-black: linear-gradient(160deg, #18181b 0%, #101013 40%, #08080a 75%, #000000 100%);
+      --wp-white: linear-gradient(160deg, #f8fafc 0%, #e2e8f0 45%, #cbd5e1 75%, #94a3b8 100%);
+      --wp-slate: linear-gradient(160deg, #334155 0%, #1e293b 40%, #0f172a 75%, #020617 100%);
+      --wp-stone: linear-gradient(160deg, #44403c 0%, #292524 40%, #1c1917 75%, #0c0a09 100%);
       --wp-pinstripe: url('data:image/jpeg;base64,{pinstripe_b64}');
       --wp-neoclassical: url('data:image/jpeg;base64,{neoclassical_b64}');
       --active-wp: var(--wp-alpine);
@@ -71,6 +79,46 @@ html_content = f'''<!DOCTYPE html>
       background-image: var(--wp-alpine);
       background-size: cover;
       background-position: center top;
+    }}
+    .bg-red {{
+      background-image: var(--wp-red);
+      background-size: cover;
+      background-position: center;
+    }}
+    .bg-green {{
+      background-image: var(--wp-green);
+      background-size: cover;
+      background-position: center;
+    }}
+    .bg-yellow {{
+      background-image: var(--wp-yellow);
+      background-size: cover;
+      background-position: center;
+    }}
+    .bg-purple {{
+      background-image: var(--wp-purple);
+      background-size: cover;
+      background-position: center;
+    }}
+    .bg-black {{
+      background-image: var(--wp-black);
+      background-size: cover;
+      background-position: center;
+    }}
+    .bg-white {{
+      background-image: var(--wp-white);
+      background-size: cover;
+      background-position: center;
+    }}
+    .bg-slate {{
+      background-image: var(--wp-slate);
+      background-size: cover;
+      background-position: center;
+    }}
+    .bg-stone {{
+      background-image: var(--wp-stone);
+      background-size: cover;
+      background-position: center;
     }}
     .bg-pinstripe {{
       background-image: var(--wp-pinstripe);
@@ -453,15 +501,50 @@ html_content = f'''<!DOCTYPE html>
   </div>
 
   <!-- Atmosphere Switcher Bar -->
-  <div class="flex items-center space-x-2 mb-4 bg-neutral-900/90 border border-neutral-800 p-1.5 rounded-full text-xs">
-    <button onclick="setWallpaper('alpine')" id="btnWpAlpine" class="px-3.5 py-1.2 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-medium transition-all">
-      🏔️ Alpine Sky
+  <div class="flex items-center space-x-1.5 mb-4 max-w-[420px] overflow-x-auto hide-scrollbar bg-neutral-900/90 border border-neutral-800 p-1.5 rounded-full text-xs">
+    <button onclick="setWallpaper('alpine')" id="btnWpAlpine" class="shrink-0 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-medium transition-all flex items-center space-x-1.5">
+      <span class="w-2 h-2 rounded-full" style="background: #0284c7;"></span>
+      <span>alpine sky</span>
     </button>
-    <button onclick="setWallpaper('pinstripe')" id="btnWpPinstripe" class="px-3.5 py-1.2 rounded-full text-neutral-400 hover:text-white transition-all">
-      👔 Pinstripe (From Photo)
+    <button onclick="setWallpaper('red')" id="btnWpRed" class="shrink-0 px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-all flex items-center space-x-1.5">
+      <span class="w-2 h-2 rounded-full" style="background: #dc2626;"></span>
+      <span>red</span>
     </button>
-    <button onclick="setWallpaper('neoclassical')" id="btnWpNeo" class="px-3.5 py-1.2 rounded-full text-neutral-400 hover:text-white transition-all">
-      🏛️ Neoclassical
+    <button onclick="setWallpaper('green')" id="btnWpGreen" class="shrink-0 px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-all flex items-center space-x-1.5">
+      <span class="w-2 h-2 rounded-full" style="background: #16a34a;"></span>
+      <span>green</span>
+    </button>
+    <button onclick="setWallpaper('yellow')" id="btnWpYellow" class="shrink-0 px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-all flex items-center space-x-1.5">
+      <span class="w-2 h-2 rounded-full" style="background: #d97706;"></span>
+      <span>yellow</span>
+    </button>
+    <button onclick="setWallpaper('purple')" id="btnWpPurple" class="shrink-0 px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-all flex items-center space-x-1.5">
+      <span class="w-2 h-2 rounded-full" style="background: #9333ea;"></span>
+      <span>purple</span>
+    </button>
+    <button onclick="setWallpaper('black')" id="btnWpBlack" class="shrink-0 px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-all flex items-center space-x-1.5">
+      <span class="w-2 h-2 rounded-full border border-white/20" style="background: #000000;"></span>
+      <span>black</span>
+    </button>
+    <button onclick="setWallpaper('white')" id="btnWpWhite" class="shrink-0 px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-all flex items-center space-x-1.5">
+      <span class="w-2 h-2 rounded-full" style="background: #f8fafc;"></span>
+      <span>white</span>
+    </button>
+    <button onclick="setWallpaper('slate')" id="btnWpSlate" class="shrink-0 px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-all flex items-center space-x-1.5">
+      <span class="w-2 h-2 rounded-full" style="background: #475569;"></span>
+      <span>slate</span>
+    </button>
+    <button onclick="setWallpaper('stone')" id="btnWpStone" class="shrink-0 px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-all flex items-center space-x-1.5">
+      <span class="w-2 h-2 rounded-full" style="background: #78716c;"></span>
+      <span>stone</span>
+    </button>
+    <button onclick="setWallpaper('pinstripe')" id="btnWpPinstripe" class="shrink-0 px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-all flex items-center space-x-1.5">
+      <span class="w-2 h-2 rounded-full" style="background: #e2e8f0;"></span>
+      <span>pinstripe</span>
+    </button>
+    <button onclick="setWallpaper('neoclassical')" id="btnWpNeo" class="shrink-0 px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-all flex items-center space-x-1.5">
+      <span class="w-2 h-2 rounded-full" style="background: #3a3f47;"></span>
+      <span>neoclassical</span>
     </button>
   </div>
 
@@ -580,27 +663,124 @@ html_content = f'''<!DOCTYPE html>
         <!-- Visual Atmosphere Selection -->
         <div>
           <div class="text-[11px] font-medium tracking-wider text-white/40 lowercase mb-2.5">atmosphere</div>
-          <div class="space-y-2">
-            <div onclick="setWallpaper('alpine')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
-              <div>
-                <div class="font-medium lowercase text-[13px]">alpine sky</div>
-                <div class="text-[10px] text-white/50 lowercase">radiant azure mountain sky with liquid refraction</div>
+          <div class="space-y-1.5 max-h-56 overflow-y-auto hide-scrollbar pr-0.5">
+            <div onclick="setWallpaper('alpine')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #1e40af, #0369a1);"></div>
+                <div>
+                  <div class="font-medium lowercase text-[13px]">alpine sky</div>
+                  <div class="text-[10px] text-white/50 lowercase">radiant azure mountain sky with liquid refraction</div>
+                </div>
               </div>
               <span id="checkAlpine" class="text-white font-medium text-sm">✓</span>
             </div>
 
-            <div onclick="setWallpaper('pinstripe')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
-              <div>
-                <div class="font-medium lowercase text-[13px]">pinstripe</div>
-                <div class="text-[10px] text-white/50 lowercase">vertical navy stripes refracted through liquid numerals</div>
+            <div onclick="setWallpaper('red')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #b91c1c, #450a0a);"></div>
+                <div>
+                  <div class="font-medium lowercase text-[13px]">crimson red</div>
+                  <div class="text-[10px] text-white/50 lowercase">deep ruby velvet with burning caustics</div>
+                </div>
+              </div>
+              <span id="checkRed" class="text-white font-medium text-sm hidden">✓</span>
+            </div>
+
+            <div onclick="setWallpaper('green')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #059669, #022c22);"></div>
+                <div>
+                  <div class="font-medium lowercase text-[13px]">emerald green</div>
+                  <div class="text-[10px] text-white/50 lowercase">rich botanical pine to deep malachite</div>
+                </div>
+              </div>
+              <span id="checkGreen" class="text-white font-medium text-sm hidden">✓</span>
+            </div>
+
+            <div onclick="setWallpaper('yellow')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #d97706, #451a03);"></div>
+                <div>
+                  <div class="font-medium lowercase text-[13px]">amber gold</div>
+                  <div class="text-[10px] text-white/50 lowercase">warm honey sunrise to burnished bronze</div>
+                </div>
+              </div>
+              <span id="checkYellow" class="text-white font-medium text-sm hidden">✓</span>
+            </div>
+
+            <div onclick="setWallpaper('purple')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #7c3aed, #2e1065);"></div>
+                <div>
+                  <div class="font-medium lowercase text-[13px]">amethyst purple</div>
+                  <div class="text-[10px] text-white/50 lowercase">royal deep violet to midnight plum velvet</div>
+                </div>
+              </div>
+              <span id="checkPurple" class="text-white font-medium text-sm hidden">✓</span>
+            </div>
+
+            <div onclick="setWallpaper('black')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-3.5 h-3.5 rounded-full shrink-0 border border-white/20 shadow-sm" style="background: #000000;"></div>
+                <div>
+                  <div class="font-medium lowercase text-[13px]">obsidian black</div>
+                  <div class="text-[10px] text-white/50 lowercase">pure stealth oled pitch black with subtle vignette</div>
+                </div>
+              </div>
+              <span id="checkBlack" class="text-white font-medium text-sm hidden">✓</span>
+            </div>
+
+            <div onclick="setWallpaper('white')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #ffffff, #cbd5e1);"></div>
+                <div>
+                  <div class="font-medium lowercase text-[13px]">alabaster white</div>
+                  <div class="text-[10px] text-white/50 lowercase">sculptural porcelain pearl and platinum fog</div>
+                </div>
+              </div>
+              <span id="checkWhite" class="text-white font-medium text-sm hidden">✓</span>
+            </div>
+
+            <div onclick="setWallpaper('slate')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #475569, #0f172a);"></div>
+                <div>
+                  <div class="font-medium lowercase text-[13px]">charcoal slate</div>
+                  <div class="text-[10px] text-white/50 lowercase">architectural deep graphite slate neutral</div>
+                </div>
+              </div>
+              <span id="checkSlate" class="text-white font-medium text-sm hidden">✓</span>
+            </div>
+
+            <div onclick="setWallpaper('stone')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #78716c, #1c1917);"></div>
+                <div>
+                  <div class="font-medium lowercase text-[13px]">warm stone</div>
+                  <div class="text-[10px] text-white/50 lowercase">cashmere espresso earth tone neutral</div>
+                </div>
+              </div>
+              <span id="checkStone" class="text-white font-medium text-sm hidden">✓</span>
+            </div>
+
+            <div onclick="setWallpaper('pinstripe')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #ffffff, #94a3b8);"></div>
+                <div>
+                  <div class="font-medium lowercase text-[13px]">pinstripe</div>
+                  <div class="text-[10px] text-white/50 lowercase">vertical navy tailored stripes with razor optics</div>
+                </div>
               </div>
               <span id="checkPinstripe" class="text-white font-medium text-sm hidden">✓</span>
             </div>
 
-            <div onclick="setWallpaper('neoclassical')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
-              <div>
-                <div class="font-medium lowercase text-[13px]">neoclassical</div>
-                <div class="text-[10px] text-white/50 lowercase">architectural stone refracted through clear water drops</div>
+            <div onclick="setWallpaper('neoclassical')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #3a3f47, #1e2126);"></div>
+                <div>
+                  <div class="font-medium lowercase text-[13px]">neoclassical</div>
+                  <div class="text-[10px] text-white/50 lowercase">architectural stone refracted through clear water drops</div>
+                </div>
               </div>
               <span id="checkNeo" class="text-white font-medium text-sm hidden">✓</span>
             </div>
@@ -790,33 +970,53 @@ html_content = f'''<!DOCTYPE html>
     setInterval(updateClock, 1000);
     updateClock();
 
+    // Atmospheres Configuration
+    const allAtmospheres = [
+      {{ id: 'alpine', name: 'alpine sky', isLight: false }},
+      {{ id: 'red', name: 'crimson red', isLight: false }},
+      {{ id: 'green', name: 'emerald green', isLight: false }},
+      {{ id: 'yellow', name: 'amber gold', isLight: false }},
+      {{ id: 'purple', name: 'amethyst purple', isLight: false }},
+      {{ id: 'black', name: 'obsidian black', isLight: false }},
+      {{ id: 'white', name: 'alabaster white', isLight: true }},
+      {{ id: 'slate', name: 'charcoal slate', isLight: false }},
+      {{ id: 'stone', name: 'warm stone', isLight: false }},
+      {{ id: 'pinstripe', name: 'pinstripe', isLight: true }},
+      {{ id: 'neoclassical', name: 'neoclassical', isLight: false }}
+    ];
+
     // Wallpaper Switcher
     function setWallpaper(wp) {{
       currentWallpaper = wp;
       const phone = document.getElementById('phoneContainer');
-      const btnAlpine = document.getElementById('btnWpAlpine');
-      const btnPinstripe = document.getElementById('btnWpPinstripe');
-      const btnNeo = document.getElementById('btnWpNeo');
 
-      phone.classList.remove('bg-alpine', 'bg-pinstripe', 'bg-neoclassical');
+      allAtmospheres.forEach(a => phone.classList.remove(`bg-${{a.id}}`));
       phone.classList.add(`bg-${{wp}}`);
       phone.style.setProperty('--active-wp', `var(--wp-${{wp}})`);
 
-      btnAlpine.className = wp === 'alpine' 
-        ? 'px-3.5 py-1.2 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-medium transition-all' 
-        : 'px-3.5 py-1.2 rounded-full text-neutral-400 hover:text-white transition-all';
-      btnPinstripe.className = wp === 'pinstripe' 
-        ? 'px-3.5 py-1.2 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-medium transition-all' 
-        : 'px-3.5 py-1.2 rounded-full text-neutral-400 hover:text-white transition-all';
-      btnNeo.className = wp === 'neoclassical' 
-        ? 'px-3.5 py-1.2 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-medium transition-all' 
-        : 'px-3.5 py-1.2 rounded-full text-neutral-400 hover:text-white transition-all';
+      allAtmospheres.forEach(a => {{
+        const check = document.getElementById(`check${{a.id.charAt(0).toUpperCase() + a.id.slice(1)}}`);
+        if (check) check.classList.toggle('hidden', a.id !== wp);
+        const topBtn = document.getElementById(`btnWp${{a.id.charAt(0).toUpperCase() + a.id.slice(1)}}`);
+        if (topBtn) {{
+          topBtn.className = (a.id === wp)
+            ? 'shrink-0 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-medium transition-all flex items-center space-x-1.5'
+            : 'shrink-0 px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-all flex items-center space-x-1.5';
+        }}
+      }});
 
-      document.getElementById('checkAlpine').classList.toggle('hidden', wp !== 'alpine');
-      document.getElementById('checkPinstripe').classList.toggle('hidden', wp !== 'pinstripe');
-      document.getElementById('checkNeo').classList.toggle('hidden', wp !== 'neoclassical');
+      // Legacy check Neo / btn Neo support
+      const checkNeo = document.getElementById('checkNeo');
+      if (checkNeo) checkNeo.classList.toggle('hidden', wp !== 'neoclassical');
+      const btnWpNeo = document.getElementById('btnWpNeo');
+      if (btnWpNeo) {{
+        btnWpNeo.className = (wp === 'neoclassical')
+          ? 'shrink-0 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-medium transition-all flex items-center space-x-1.5'
+          : 'shrink-0 px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-all flex items-center space-x-1.5';
+      }}
 
-      const isLight = (wp === 'pinstripe');
+      const currentAtmo = allAtmospheres.find(a => a.id === wp) || allAtmospheres[0];
+      const isLight = currentAtmo.isLight;
       const statusBar = document.getElementById('statusBar');
       const dateHeader = document.getElementById('dateHeader');
 
@@ -840,7 +1040,7 @@ html_content = f'''<!DOCTYPE html>
 
       renderFavorites();
       renderAllApps();
-      showToast(`atmosphere: ${{wp}}`);
+      showToast(`atmosphere: ${{currentAtmo.name}}`);
     }}
 
     // Render Favorites in PURE WATER DROPLET REFRACTION (Zero boundary!)

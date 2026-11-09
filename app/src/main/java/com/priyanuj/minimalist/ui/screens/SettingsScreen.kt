@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Check
@@ -28,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.priyanuj.minimalist.data.AppTheme
+import com.priyanuj.minimalist.data.Atmosphere
 import com.priyanuj.minimalist.data.FontColor
 import com.priyanuj.minimalist.data.FontStyle
 import com.priyanuj.minimalist.data.TextTransform
@@ -37,6 +40,8 @@ import com.priyanuj.minimalist.data.TextTransform
 fun SettingsScreen(
     currentTheme: AppTheme,
     onThemeSelect: (AppTheme) -> Unit,
+    currentAtmosphere: Atmosphere = Atmosphere.ALPINE,
+    onAtmosphereSelect: (Atmosphere) -> Unit = {},
     fontColor: FontColor = FontColor.WHITE,
     onFontColorSelect: (FontColor) -> Unit = {},
     fontStyle: FontStyle = FontStyle.SANS_SERIF,
@@ -75,12 +80,36 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp)
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = "atmosphere",
+                style = MaterialTheme.typography.labelSmall.copy(
+                    color = MaterialTheme.colorScheme.secondary,
+                    fontSize = 11.sp,
+                    letterSpacing = 1.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Atmosphere.values().forEach { atmo ->
+                OptionRow(
+                    title = atmo.displayName,
+                    isSelected = currentAtmosphere == atmo,
+                    onClick = { onAtmosphereSelect(atmo) }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "theme",
                 style = MaterialTheme.typography.labelSmall.copy(
                     color = MaterialTheme.colorScheme.secondary,
                     fontSize = 11.sp,

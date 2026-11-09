@@ -73,6 +73,7 @@ fun LiquidHomeScreen(
     onUpiScanClick: () -> Unit = {},
     onQuickDial: () -> Unit = {},
     fontColor: com.priyanuj.minimalist.data.FontColor = com.priyanuj.minimalist.data.FontColor.WHITE,
+    atmosphere: com.priyanuj.minimalist.data.Atmosphere = com.priyanuj.minimalist.data.Atmosphere.ALPINE,
     timeHours: String = "21",
     timeMinutes: String = "41",
     dateString: String = "Sun, Nov 8",
@@ -125,6 +126,7 @@ fun LiquidHomeScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
+            .background(getAtmosphereBrush(atmosphere))
             .nestedScroll(nestedScrollConnection)
             .pointerInput(Unit) {
                 detectDragGestures(
@@ -422,5 +424,46 @@ fun ClearGlassAppRow(
                 )
             }
         }
+    }
+}
+
+/**
+ * Returns dynamic atmosphere brush for home screen matching the chosen color/neutral theme.
+ */
+fun getAtmosphereBrush(atmosphere: com.priyanuj.minimalist.data.Atmosphere): Brush {
+    return when (atmosphere) {
+        com.priyanuj.minimalist.data.Atmosphere.ALPINE -> Brush.verticalGradient(
+            colors = listOf(Color(0xFF0D253F), Color(0xFF14365D), Color(0xFF091829))
+        )
+        com.priyanuj.minimalist.data.Atmosphere.RED -> Brush.verticalGradient(
+            colors = listOf(Color(0xFF7F1D1D), Color(0xFF450A0A), Color(0xFF200407), Color(0xFF0A0102))
+        )
+        com.priyanuj.minimalist.data.Atmosphere.GREEN -> Brush.verticalGradient(
+            colors = listOf(Color(0xFF064E3B), Color(0xFF032B21), Color(0xFF011B14), Color(0xFF010C08))
+        )
+        com.priyanuj.minimalist.data.Atmosphere.YELLOW -> Brush.verticalGradient(
+            colors = listOf(Color(0xFF92400E), Color(0xFF712B08), Color(0xFF431702), Color(0xFF1C0A00))
+        )
+        com.priyanuj.minimalist.data.Atmosphere.PURPLE -> Brush.verticalGradient(
+            colors = listOf(Color(0xFF581C87), Color(0xFF3B0764), Color(0xFF20023A), Color(0xFF0C0018))
+        )
+        com.priyanuj.minimalist.data.Atmosphere.BLACK -> Brush.verticalGradient(
+            colors = listOf(Color(0xFF18181B), Color(0xFF101013), Color(0xFF08080A), Color(0xFF000000))
+        )
+        com.priyanuj.minimalist.data.Atmosphere.WHITE -> Brush.verticalGradient(
+            colors = listOf(Color(0xFFF8FAFC), Color(0xFFE2E8F0), Color(0xFFCBD5E1), Color(0xFF94A3B8))
+        )
+        com.priyanuj.minimalist.data.Atmosphere.SLATE -> Brush.verticalGradient(
+            colors = listOf(Color(0xFF334155), Color(0xFF1E293B), Color(0xFF0F172A), Color(0xFF020617))
+        )
+        com.priyanuj.minimalist.data.Atmosphere.STONE -> Brush.verticalGradient(
+            colors = listOf(Color(0xFF44403C), Color(0xFF292524), Color(0xFF1C1917), Color(0xFF0C0A09))
+        )
+        com.priyanuj.minimalist.data.Atmosphere.PINSTRIPE -> Brush.verticalGradient(
+            colors = listOf(Color(0xFFE0E0E0), Color(0xFFF0F0F0))
+        )
+        com.priyanuj.minimalist.data.Atmosphere.NEOCLASSICAL -> Brush.verticalGradient(
+            colors = listOf(Color(0xFF3A3F47), Color(0xFF1E2126))
+        )
     }
 }

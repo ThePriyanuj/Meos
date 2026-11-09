@@ -51,6 +51,12 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
         initialValue = com.priyanuj.minimalist.data.FontColor.WHITE
     )
 
+    val atmosphere: StateFlow<com.priyanuj.minimalist.data.Atmosphere> = preferences.atmosphereFlow.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = com.priyanuj.minimalist.data.Atmosphere.ALPINE
+    )
+
     private val allApps: StateFlow<List<AppModel>> = repository.observeApps().stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -146,6 +152,12 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
     fun setPaymentApp(packageName: String) {
         viewModelScope.launch {
             preferences.setPaymentApp(packageName)
+        }
+    }
+
+    fun setAtmosphere(atmosphere: com.priyanuj.minimalist.data.Atmosphere) {
+        viewModelScope.launch {
+            preferences.setAtmosphere(atmosphere)
         }
     }
 

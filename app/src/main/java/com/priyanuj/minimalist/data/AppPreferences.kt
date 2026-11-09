@@ -46,6 +46,20 @@ enum class FontColor {
     BLACK
 }
 
+enum class Atmosphere(val displayName: String, val isLight: Boolean = false) {
+    ALPINE("alpine sky", false),
+    RED("crimson red", false),
+    GREEN("emerald green", false),
+    YELLOW("amber gold", false),
+    PURPLE("amethyst purple", false),
+    BLACK("obsidian black", false),
+    WHITE("alabaster white", true),
+    SLATE("charcoal slate", false),
+    STONE("warm stone", false),
+    PINSTRIPE("pinstripe", true),
+    NEOCLASSICAL("neoclassical", false)
+}
+
 class AppPreferences(private val context: Context) {
 
     companion object {
@@ -64,6 +78,12 @@ class AppPreferences(private val context: Context) {
         private val KEY_MAX_FAVORITES = intPreferencesKey("max_favorites_count")
         private val KEY_PAYMENT_APP = stringPreferencesKey("default_payment_app")
         private val KEY_FONT_COLOR = stringPreferencesKey("font_color")
+        private val KEY_ATMOSPHERE = stringPreferencesKey("selected_atmosphere")
+    }
+
+    val atmosphereFlow: Flow<Atmosphere> = context.dataStore.data.map { preferences ->
+        val raw = preferences[KEY_ATMOSPHERE] ?: Atmosphere.ALPINE.name
+        try { Atmosphere.valueOf(raw) } catch (_: Exception) { Atmosphere.ALPINE }
     }
 
     val fontColorFlow: Flow<FontColor> = context.dataStore.data.map { preferences ->
@@ -244,6 +264,10 @@ class AppPreferences(private val context: Context) {
 
     suspend fun setPaymentApp(packageName: String) {
         context.dataStore.edit { prefs -> prefs[KEY_PAYMENT_APP] = packageName }
+    }
+
+    suspend fun setAtmosphere(atmosphere: Atmosphere) {
+        context.dataStore.edit { prefs -> prefs[KEY_ATMOSPHERE] = atmosphere.name }
     }
 
     suspend fun setFontColor(color: FontColor) {
