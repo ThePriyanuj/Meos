@@ -9,9 +9,14 @@ html_content = f'''<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Meos - Longitudinal Water Drop Refraction</title>
-  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <script src="tailwindcss.min.js"></script>
+  <script>
+    if (!window.tailwind) {{
+      document.write('<script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"><' + '/script>');
+    }}
+  </script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Antonio:wght@100;200;300;400;500;600&family=Barlow+Condensed:wght@200;300;400;500&family=Plus+Jakarta+Sans:wght@200;300;400;500;600&display=swap');
     
@@ -51,6 +56,9 @@ html_content = f'''<!DOCTYPE html>
 
     /* ================= WALLPAPERS & DYNAMIC WATER REFRACTION ================= */
     :root {{
+      --safe-top: 44px;
+      --safe-bottom-banner: 24px;
+      --safe-bottom-dock: 86px;
       --wp-alpine: url('data:image/jpeg;base64,{alpine_b64}');
       --wp-red: linear-gradient(160deg, #7f1d1d 0%, #450a0a 38%, #200407 72%, #0a0102 100%);
       --wp-green: linear-gradient(160deg, #064e3b 0%, #032b21 38%, #011b14 72%, #010c08 100%);
@@ -308,6 +316,59 @@ html_content = f'''<!DOCTYPE html>
     }}
     #allAppsList {{
       overscroll-behavior-y: contain;
+    }}
+
+    /* Mobile Fullscreen & Native Launcher Optimization */
+    @media (max-width: 600px), (display-mode: standalone) {{
+      html, body {{
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        overflow: hidden !important;
+        background: #000000 !important;
+        display: block !important;
+      }}
+      .desktop-only {{
+        display: none !important;
+      }}
+      .phone-chassis {{
+        box-shadow: none !important;
+      }}
+      #phoneContainer {{
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        max-width: 100vw !important;
+        max-height: 100dvh !important;
+        border-radius: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }}
+      #homeScreen {{
+        top: var(--safe-top, 44px) !important;
+        bottom: var(--safe-bottom-dock, 86px) !important;
+        padding-left: 28px !important;
+        padding-right: 28px !important;
+      }}
+      #drawerScreen {{
+        top: calc(var(--safe-top, 44px) + 54px) !important;
+        bottom: var(--safe-bottom-dock, 86px) !important;
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+      }}
+      #unifiedBanner {{
+        bottom: var(--safe-bottom-banner, 24px) !important;
+        left: 20px !important;
+        right: 20px !important;
+      }}
+      #settingsScreen, #todoScreen {{
+        padding-top: var(--safe-top, 44px) !important;
+        padding-bottom: var(--safe-bottom-banner, 24px) !important;
+      }}
     }}
 
     /* ================= DYNAMIC FONT COLOR: BLACK OVERRIDE ================= */
@@ -601,8 +662,6 @@ html_content = f'''<!DOCTYPE html>
         drop-shadow(0 1.5px 2px rgba(0, 15, 40, 0.5));
       transform: translateX(4px);
     }}
-      transform: translateX(4px);
-    }}
     .water-drop-app-text:active {{
       transform: scale(0.96) translateX(2px);
       opacity: 0.85;
@@ -649,7 +708,7 @@ html_content = f'''<!DOCTYPE html>
 <body class="min-h-screen flex flex-col items-center justify-center p-3 sm:p-5">
 
   <!-- Header Banner -->
-  <div class="mb-3 text-center">
+  <div class="desktop-only mb-3 text-center">
     <div class="text-xs uppercase tracking-[0.3em] text-cyan-300 font-semibold flex items-center justify-center space-x-2">
       <span>Meos</span>
       <span class="text-neutral-500">•</span>
@@ -661,7 +720,7 @@ html_content = f'''<!DOCTYPE html>
   </div>
 
   <!-- Atmosphere Switcher Bar -->
-  <div class="flex items-center space-x-1.5 mb-4 max-w-[420px] overflow-x-auto hide-scrollbar bg-neutral-900/90 border border-neutral-800 p-1.5 rounded-full text-xs">
+  <div class="desktop-only flex items-center space-x-1.5 mb-4 max-w-[420px] overflow-x-auto hide-scrollbar bg-neutral-900/90 border border-neutral-800 p-1.5 rounded-full text-xs">
     <button onclick="setWallpaper('alpine')" id="btnWpAlpine" class="shrink-0 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-medium transition-all flex items-center space-x-1.5">
       <span class="w-2 h-2 rounded-full" style="background: #0284c7;"></span>
       <span>alpine sky</span>
@@ -1325,7 +1384,7 @@ html_content = f'''<!DOCTYPE html>
     </div>
 
     <!-- Android Home Navigation Bar -->
-    <div class="h-4 flex items-center justify-center cursor-pointer z-40 pb-1" onclick="goHome()" title="Tap to return Home">
+    <div class="desktop-only h-4 flex items-center justify-center cursor-pointer z-40 pb-1" onclick="goHome()" title="Tap to return Home">
       <div class="w-24 h-1 bg-white/40 rounded-full hover:bg-white transition-colors"></div>
     </div>
 
@@ -1422,8 +1481,12 @@ html_content = f'''<!DOCTYPE html>
     }} catch(e) {{}}
 
     function triggerCustomWallpaperPicker() {{
-      const input = document.getElementById('customWallpaperInput');
-      if (input) input.click();
+      if (window.Android && window.Android.openGallery) {{
+        window.Android.openGallery();
+      }} else {{
+        const input = document.getElementById('customWallpaperInput');
+        if (input) input.click();
+      }}
     }}
 
     function handleCustomWallpaperSelected(e) {{
@@ -1608,6 +1671,15 @@ html_content = f'''<!DOCTYPE html>
       }}, 280);
     }}
 
+    function executeLaunch(app) {{
+      if (window.Android && window.Android.launchApp) {{
+        window.Android.launchApp(app.id);
+      }} else {{
+        showToast(`Launched ${{app.name}}`);
+      }}
+      goHome();
+    }}
+
     function launchApp(id) {{
       if (wasSwiping) return;
       const app = apps.find(a => a.id === id);
@@ -1616,8 +1688,7 @@ html_content = f'''<!DOCTYPE html>
       if (app.delay > 0) {{
         startMindfulDelay(app);
       }} else {{
-        showToast(`Launched ${{app.name}}`);
-        goHome();
+        executeLaunch(app);
       }}
     }}
 
@@ -1658,9 +1729,9 @@ html_content = f'''<!DOCTYPE html>
 
     function finishMindfulLaunch() {{
       if (!mindfulTarget) return;
+      const target = mindfulTarget;
       dismissMindful();
-      showToast(`Opened ${{mindfulTarget.name}} intentionally`);
-      goHome();
+      executeLaunch(target);
     }}
 
     function dismissMindful() {{
@@ -1700,7 +1771,9 @@ html_content = f'''<!DOCTYPE html>
       const drawerScreen = document.getElementById('drawerScreen');
 
       // Exact pixel distance from bottom resting position to top search bar position
-      const targetTop = 38;
+      const isMobile = window.innerWidth <= 600;
+      const safeTopPx = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-top')) || 44;
+      const targetTop = isMobile ? (safeTopPx + 8) : 38;
       const currentTop = banner.offsetTop;
       const travelDistance = currentTop - targetTop;
 
@@ -1721,6 +1794,11 @@ html_content = f'''<!DOCTYPE html>
       homeScreen.style.transform = 'translate3d(0, -64px, 0)';
       homeScreen.style.opacity = '0';
       homeScreen.style.pointerEvents = 'none';
+      setTimeout(() => {{
+        if (isDrawerOpen) {{
+          homeScreen.style.display = 'none';
+        }}
+      }}, 380);
 
       // 4. Drawer Screen Slides In Upward in Exact Sync
       drawerScreen.style.transform = 'translate3d(0, 0, 0)';
@@ -1771,9 +1849,12 @@ html_content = f'''<!DOCTYPE html>
       drawerScreen.style.pointerEvents = 'none';
 
       // 4. Home Screen Slides In Downward in Exact Sync
-      homeScreen.style.transform = 'translate3d(0, 0, 0)';
-      homeScreen.style.opacity = '1';
-      homeScreen.style.pointerEvents = 'auto';
+      homeScreen.style.display = '';
+      requestAnimationFrame(() => {{
+        homeScreen.style.transform = 'translate3d(0, 0, 0)';
+        homeScreen.style.opacity = '1';
+        homeScreen.style.pointerEvents = 'auto';
+      }});
 
       // Reset Search
       const input = document.getElementById('searchInput');
@@ -1872,7 +1953,11 @@ html_content = f'''<!DOCTYPE html>
     }}
 
     function quickDial() {{
-      showToast(`opening ${{settingsState.dialerApp || 'phone'}}...`);
+      if (window.Android && window.Android.openDialer) {{
+        window.Android.openDialer();
+      }} else {{
+        showToast(`opening ${{settingsState.dialerApp || 'phone'}}...`);
+      }}
     }}
 
     function setClockApp(key, name) {{
@@ -1889,7 +1974,11 @@ html_content = f'''<!DOCTYPE html>
     }}
 
     function openClockApp() {{
-      showToast(`opening ${{settingsState.clockApp || 'clock'}}...`);
+      if (window.Android && window.Android.openClock) {{
+        window.Android.openClock();
+      }} else {{
+        showToast(`opening ${{settingsState.clockApp || 'clock'}}...`);
+      }}
     }}
 
     function openHiddenAppsList() {{
@@ -1926,6 +2015,7 @@ html_content = f'''<!DOCTYPE html>
       const app = apps.find(a => a.id === id);
       if (app) {{
         app.hidden = false;
+        syncPreferences();
         renderHiddenAppsList();
         renderFavorites();
         renderAllApps(document.getElementById('searchInput').value);
@@ -2085,7 +2175,11 @@ html_content = f'''<!DOCTYPE html>
     }}
 
     function openDeviceSettings() {{
-      showToast('opening device settings');
+      if (window.Android && window.Android.openDeviceSettings) {{
+        window.Android.openDeviceSettings();
+      }} else {{
+        showToast('opening device settings');
+      }}
     }}
 
     let currentFontColor = 'white';
@@ -2133,7 +2227,11 @@ html_content = f'''<!DOCTYPE html>
 
     function openUpiScanner() {{
       // Directly opens the scanner of the chosen online payment app
-      showToast(`opening ${{selectedPaymentAppName}} scanner...`);
+      if (window.Android && window.Android.openUpiScanner) {{
+        window.Android.openUpiScanner(selectedPaymentApp);
+      }} else {{
+        showToast(`opening ${{selectedPaymentAppName}} scanner...`);
+      }}
     }}
 
     function closeUpiScanner() {{}}
@@ -2188,6 +2286,7 @@ html_content = f'''<!DOCTYPE html>
       app.fav = !app.fav;
       const isFav = app.fav;
       const appName = app.name;
+      syncPreferences();
       closeContextMenu();
       renderFavorites();
       renderAllApps(document.getElementById('searchInput')?.value || '');
@@ -2202,6 +2301,7 @@ html_content = f'''<!DOCTYPE html>
       else app.delay = 0;
       const delay = app.delay;
       const appName = app.name;
+      syncPreferences();
       closeContextMenu();
       renderFavorites();
       renderAllApps(document.getElementById('searchInput')?.value || '');
@@ -2213,6 +2313,7 @@ html_content = f'''<!DOCTYPE html>
       const app = selectedApp;
       app.hidden = true;
       const appName = app.name;
+      syncPreferences();
       closeContextMenu();
       renderFavorites();
       renderAllApps(document.getElementById('searchInput')?.value || '');
@@ -2225,6 +2326,7 @@ html_content = f'''<!DOCTYPE html>
       const newName = prompt(`rename ${{app.name}}:`, app.name);
       if (newName && newName.trim()) {{
         app.name = newName.trim();
+        syncPreferences();
         renderFavorites();
         renderAllApps(document.getElementById('searchInput')?.value || '');
         showToast(`renamed to ${{app.name}}`);
@@ -2287,8 +2389,8 @@ html_content = f'''<!DOCTYPE html>
     let touchHandled = false;
 
     function handleGestureStart(clientX, clientY, target) {{
-      // Ignore interactions on alphabet scrubber
-      if (target && target.closest && target.closest('#alphabetScrubber')) {{
+      // Ignore interactions on alphabet scrubber or unified banner
+      if (target && target.closest && (target.closest('#scrubber') || target.closest('#unifiedBanner'))) {{
         isTrackingGesture = false;
         return;
       }}
@@ -2478,10 +2580,134 @@ html_content = f'''<!DOCTYPE html>
       }}
     }}, {{ passive: true }});
 
+    // ================= NATIVE ANDROID BRIDGE & PREFERENCES =================
+    function syncPreferences() {{
+      try {{
+        localStorage.setItem('meos_fav_apps', JSON.stringify(apps.filter(a => a.fav).map(a => a.id)));
+        localStorage.setItem('meos_hidden_apps', JSON.stringify(apps.filter(a => a.hidden).map(a => a.id)));
+        const delays = {{}};
+        apps.forEach(a => {{ if (a.delay > 0) delays[a.id] = a.delay; }});
+        localStorage.setItem('meos_delays', JSON.stringify(delays));
+        const names = {{}};
+        apps.forEach(a => {{ if (a.name !== (a.originalName || '').toLowerCase()) names[a.id] = a.name; }});
+        localStorage.setItem('meos_custom_names', JSON.stringify(names));
+      }} catch(e) {{}}
+    }}
+
+    function initNativeApps() {{
+      if (window.Android && window.Android.getInstalledApps) {{
+        try {{
+          const raw = window.Android.getInstalledApps();
+          if (raw) {{
+            const nativeList = JSON.parse(raw);
+            if (Array.isArray(nativeList) && nativeList.length > 0) {{
+              let localFavs = null;
+              let localHidden = null;
+              let localDelays = null;
+              let localNames = null;
+              try {{
+                localFavs = JSON.parse(localStorage.getItem('meos_fav_apps') || 'null');
+                localHidden = JSON.parse(localStorage.getItem('meos_hidden_apps') || 'null');
+                localDelays = JSON.parse(localStorage.getItem('meos_delays') || 'null');
+                localNames = JSON.parse(localStorage.getItem('meos_custom_names') || 'null');
+              }} catch(e) {{}}
+
+              apps.length = 0;
+              nativeList.forEach(app => {{
+                const id = app.id || app.packageName;
+                const orig = app.name || id;
+                const custom = (localNames && localNames[id]) || orig;
+                const isFav = (localFavs !== null) ? localFavs.includes(id) : !!app.fav;
+                const isHidden = (localHidden !== null) ? localHidden.includes(id) : !!app.hidden;
+                const delay = (localDelays && localDelays[id]) ? localDelays[id] : (app.delay || 0);
+
+                apps.push({{
+                  id: id,
+                  name: custom.toLowerCase(),
+                  originalName: orig,
+                  fav: isFav,
+                  hidden: isHidden,
+                  delay: delay
+                }});
+              }});
+
+              const favCount = apps.filter(a => a.fav && !a.hidden).length;
+              if (favCount === 0) {{
+                const defaults = ['dialer', 'phone', 'message', 'whatsapp', 'camera', 'chrome', 'spotify', 'youtube'];
+                let pinned = 0;
+                for (const a of apps) {{
+                  if (defaults.some(d => a.id.toLowerCase().includes(d) || a.name.toLowerCase().includes(d))) {{
+                    a.fav = true;
+                    pinned++;
+                    if (pinned >= 5) break;
+                  }}
+                }}
+                syncPreferences();
+              }}
+
+              renderFavorites();
+              renderAllApps();
+            }}
+          }}
+        }} catch (e) {{
+          console.error('Error loading native apps:', e);
+        }}
+      }}
+    }}
+    window.initNativeApps = initNativeApps;
+
+    function handleBackButton() {{
+      const ctx = document.getElementById('contextMenu');
+      if (ctx && !ctx.classList.contains('hidden')) {{
+        closeContextMenu();
+        return true;
+      }}
+      const mindful = document.getElementById('mindfulModal');
+      if (mindful && !mindful.classList.contains('hidden')) {{
+        dismissMindful();
+        return true;
+      }}
+      const lock = document.getElementById('lockScreenOverlay');
+      if (lock && !lock.classList.contains('hidden')) {{
+        unlockScreen();
+        return true;
+      }}
+      const todo = document.getElementById('todoScreen');
+      if (todo && !todo.classList.contains('hidden')) {{
+        closeTodoScreen();
+        return true;
+      }}
+      const settings = document.getElementById('settingsScreen');
+      if (settings && !settings.classList.contains('hidden')) {{
+        const views = ['home', 'display', 'gestures', 'theme', 'scanner', 'hidden', 'dialer', 'clock'];
+        let inSubView = false;
+        for (let v of views) {{
+          const el = document.getElementById(`settingsView${{v.charAt(0).toUpperCase() + v.slice(1)}}`);
+          if (el && !el.classList.contains('hidden')) {{
+            inSubView = true;
+            break;
+          }}
+        }}
+        if (inSubView) {{
+          openSettingsView('main');
+        }} else {{
+          settings.classList.add('hidden');
+        }}
+        return true;
+      }}
+      if (isDrawerOpen) {{
+        goHome();
+        return true;
+      }}
+      return false;
+    }}
+    window.handleBackButton = handleBackButton;
+
     // Init
     setupScrubber();
     renderFavorites();
     renderAllApps();
+    initNativeApps();
     if (customWallpaperData) {{
       applyCustomWallpaper(customWallpaperData);
     }}
@@ -2493,4 +2719,8 @@ html_content = f'''<!DOCTYPE html>
 with open('simulator.html', 'w', encoding='utf-8') as f:
     f.write(html_content)
 
-print("Success: Generated Meos Longitudinal Water Drop Refraction Launcher (No Boundary)!")
+os.makedirs('app/src/main/assets', exist_ok=True)
+with open('app/src/main/assets/index.html', 'w', encoding='utf-8') as f:
+    f.write(html_content)
+
+print("Success: Generated simulator.html and app/src/main/assets/index.html!")

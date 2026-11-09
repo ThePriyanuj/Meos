@@ -1,187 +1,326 @@
 package com.priyanuj.minimalist
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.AlarmClock
+import android.provider.Settings
+import android.view.KeyEvent
+import android.view.View
+import android.webkit.JavascriptInterface
+import android.webkit.ValueCallback
+import android.webkit.WebChromeClient
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import com.priyanuj.minimalist.data.AppTheme
-import com.priyanuj.minimalist.ui.components.AppActionBottomSheet
-import com.priyanuj.minimalist.ui.components.MindfulDelayDialog
-import com.priyanuj.minimalist.ui.screens.AppDrawerScreen
-import com.priyanuj.minimalist.ui.screens.HiddenAppsScreen
-import com.priyanuj.minimalist.ui.screens.HomeScreen
-import com.priyanuj.minimalist.ui.screens.LiquidHomeScreen
-import com.priyanuj.minimalist.ui.screens.SettingsScreen
-import com.priyanuj.minimalist.ui.theme.MinimalistLauncherTheme
-import com.priyanuj.minimalist.viewmodel.LauncherViewModel
-import com.priyanuj.minimalist.viewmodel.Screen
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import org.json.JSONArray
+import org.json.JSONObject
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: LauncherViewModel by viewModels()
+    private lateinit var webView: WebView
+    private var filePathCallback: ValueCallback<Array<Uri>>? = null
 
+    private val filePickerLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            filePathCallback?.onReceiveValue(arrayOf(uri))
+            try {
+                contentResolver.openInputStream(uri)?.use { stream ->
+                    val bytes = stream.readBytes()
+                    val b64 = android.util.Base64.encodeToString(bytes, android.util.Base64.NO_WRAP)
+                    val mimeType = contentResolver.getType(uri) ?: "image/jpeg"
+                    val dataUri = "data:$mimeType;base64,$b64"
+                    webView.post {
+                        webView.evaluateJavascript("applyCustomWallpaper('$dataUri')", null)
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        } else {
+            filePathCallback?.onReceiveValue(null)
+        }
+        filePathCallback = null
+    }
+
+    fun openGalleryPicker() {
+        filePickerLauncher.launch("image/*")
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
 
-        setContent {
-            val theme by viewModel.themeState.collectAsState()
-            val atmosphere by viewModel.atmosphere.collectAsState()
-            val fontColor by viewModel.fontColor.collectAsState()
-            val paymentApp by viewModel.paymentApp.collectAsState()
-            val currentScreen by viewModel.currentScreen.collectAsState()
-            val favoriteApps by viewModel.favoriteApps.collectAsState()
-            val visibleApps by viewModel.visibleApps.collectAsState()
-            val hiddenApps by viewModel.hiddenApps.collectAsState()
-            val searchQuery by viewModel.searchQuery.collectAsState()
-            val activeMindfulApp by viewModel.activeMindfulApp.collectAsState()
-            val selectedAppForActions by viewModel.selectedAppForActions.collectAsState()
+        // Make edge-to-edge transparent
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = Color.TRANSPARENT
+        window.navigationBarColor = Color.TRANSPARENT
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            window.isStatusBarContrastEnforced = false
+            window.isNavigationBarContrastEnforced = false
+        }
 
-            // Handle Back button for Launcher navigation
-            BackHandler(enabled = currentScreen != Screen.HOME) {
-                if (currentScreen == Screen.HIDDEN_APPS) {
-                    viewModel.currentScreen.value = Screen.SETTINGS
+        webView = WebView(this).apply {
+            layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
+            setBackgroundColor(Color.TRANSPARENT)
+            setLayerType(View.LAYER_TYPE_HARDWARE, null)
+
+            settings.apply {
+                javaScriptEnabled = true
+                domStorageEnabled = true
+                databaseEnabled = true
+                allowFileAccess = true
+                allowContentAccess = true
+                cacheMode = WebSettings.LOAD_DEFAULT
+                useWideViewPort = true
+                loadWithOverviewMode = true
+                mediaPlaybackRequiresUserGesture = false
+            }
+
+            addJavascriptInterface(AndroidBridge(this@MainActivity, this), "Android")
+
+            webViewClient = object : WebViewClient() {
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    applyInsets()
+                    view?.evaluateJavascript("if (typeof initNativeApps === 'function') initNativeApps();", null)
+                }
+            }
+
+            webChromeClient = object : WebChromeClient() {
+                override fun onShowFileChooser(
+                    wv: WebView?,
+                    callback: ValueCallback<Array<Uri>>?,
+                    fileChooserParams: FileChooserParams?
+                ): Boolean {
+                    filePathCallback?.onReceiveValue(null)
+                    filePathCallback = callback
+                    openGalleryPicker()
+                    return true
+                }
+            }
+        }
+
+        setContentView(webView)
+
+        // Listen for window insets to deliver exact status bar and navigation bar padding
+        ViewCompat.setOnApplyWindowInsetsListener(webView) { _, insets ->
+            applyInsets(insets)
+            insets
+        }
+
+        // Intercept Android Back button
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                webView.evaluateJavascript("if (typeof handleBackButton === 'function') handleBackButton(); else false;") { _ ->
+                    // Launcher stays on home screen
+                }
+            }
+        })
+
+        // Load the local launcher web app
+        webView.loadUrl("file:///android_asset/index.html")
+    }
+
+    private fun applyInsets(insets: WindowInsetsCompat? = null) {
+        val currentInsets = insets ?: ViewCompat.getRootWindowInsets(webView) ?: return
+        val statusBars = currentInsets.getInsets(WindowInsetsCompat.Type.statusBars())
+        val navBars = currentInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+
+        val density = resources.displayMetrics.density
+        val topDp = (statusBars.top / density).toInt()
+        val bottomDp = (navBars.bottom / density).toInt()
+
+        val safeTop = Math.max(topDp, 38)
+        val safeBottomBanner = Math.max(bottomDp + 16, 24)
+        val safeBottomDock = Math.max(bottomDp + 76, 84)
+
+        val js = """
+            document.documentElement.style.setProperty('--safe-top', '${safeTop}px');
+            document.documentElement.style.setProperty('--safe-bottom-banner', '${safeBottomBanner}px');
+            document.documentElement.style.setProperty('--safe-bottom-dock', '${safeBottomDock}px');
+        """.trimIndent()
+        webView.evaluateJavascript(js, null)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            webView.evaluateJavascript("if (typeof handleBackButton === 'function') handleBackButton(); else false;") { _ -> }
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::webView.isInitialized) {
+            webView.evaluateJavascript("if (typeof updateClock === 'function') updateClock();", null)
+        }
+    }
+
+    inner class AndroidBridge(private val context: Context, private val webView: WebView) {
+
+        @JavascriptInterface
+        fun launchApp(packageName: String) {
+            try {
+                val launchIntent = context.packageManager.getLaunchIntentForPackage(packageName)
+                if (launchIntent != null) {
+                    launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(launchIntent)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        @JavascriptInterface
+        fun getInstalledApps(): String {
+            return try {
+                val pm = context.packageManager
+                val intent = Intent(Intent.ACTION_MAIN, null).apply {
+                    addCategory(Intent.CATEGORY_LAUNCHER)
+                }
+                val activities = pm.queryIntentActivities(intent, 0)
+                val ownPackage = context.packageName
+                val jsonArray = JSONArray()
+
+                activities
+                    .filter { it.activityInfo.packageName != ownPackage }
+                    .distinctBy { it.activityInfo.packageName }
+                    .sortedBy { it.loadLabel(pm).toString().lowercase() }
+                    .forEach { resolveInfo ->
+                        val obj = JSONObject().apply {
+                            put("id", resolveInfo.activityInfo.packageName)
+                            put("name", resolveInfo.loadLabel(pm).toString())
+                            put("fav", false)
+                            put("hidden", false)
+                            put("delay", 0)
+                        }
+                        jsonArray.put(obj)
+                    }
+                jsonArray.toString()
+            } catch (e: Exception) {
+                "[]"
+            }
+        }
+
+        @JavascriptInterface
+        fun openDialer() {
+            try {
+                val intent = Intent(Intent.ACTION_DIAL).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(intent)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        @JavascriptInterface
+        fun openClock() {
+            try {
+                val intent = Intent(AlarmClock.ACTION_SHOW_ALARMS).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(intent)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        @JavascriptInterface
+        fun openDeviceSettings() {
+            try {
+                val intent = Intent(Settings.ACTION_SETTINGS).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        @JavascriptInterface
+        fun openUpiScanner(target: String?) {
+            try {
+                val pkg = target ?: "gpay"
+                val targetPackage = when (pkg) {
+                    "gpay" -> "com.google.android.apps.nbu.paisa.user"
+                    "phonepe" -> "com.phonepe.app"
+                    "paytm" -> "net.one97.paytm"
+                    "bhim" -> "in.org.npci.upiapp"
+                    else -> null
+                }
+
+                if (targetPackage == "com.phonepe.app") {
+                    val specific = Intent("com.phonepe.app.android.intent.action.QR_SCAN").apply {
+                        setPackage("com.phonepe.app")
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    if (specific.resolveActivity(context.packageManager) != null) {
+                        context.startActivity(specific)
+                        return
+                    }
+                } else if (targetPackage == "net.one97.paytm") {
+                    val specific = Intent(Intent.ACTION_VIEW, Uri.parse("paytmmp://pay")).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    if (specific.resolveActivity(context.packageManager) != null) {
+                        context.startActivity(specific)
+                        return
+                    }
+                }
+
+                if (targetPackage != null) {
+                    val launch = context.packageManager.getLaunchIntentForPackage(targetPackage)
+                    if (launch != null) {
+                        launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(launch)
+                        return
+                    }
+                }
+
+                val fallback = Intent(Intent.ACTION_VIEW, Uri.parse("upi://pay")).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                if (fallback.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(fallback)
                 } else {
-                    viewModel.searchQuery.value = ""
-                    viewModel.currentScreen.value = Screen.HOME
-                }
-            }
-
-            MinimalistLauncherTheme(appTheme = theme) {
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    AnimatedContent(
-                        targetState = currentScreen,
-                        label = "ScreenTransition",
-                        transitionSpec = {
-                            if (initialState == Screen.HOME && targetState == Screen.DRAWER) {
-                                // Unified Upward Momentum: One continuous movement ascending into drawer
-                                (slideInVertically(animationSpec = tween(400, easing = FastOutSlowInEasing)) { (it * 0.70f).toInt() } +
-                                        fadeIn(animationSpec = tween(280)))
-                                    .togetherWith(
-                                        slideOutVertically(animationSpec = tween(380, easing = FastOutSlowInEasing)) { -(it * 0.25f).toInt() } +
-                                                fadeOut(animationSpec = tween(220))
-                                    )
-                            } else if (initialState == Screen.DRAWER && targetState == Screen.HOME) {
-                                // Unified Downward Momentum: One continuous movement descending into home dock
-                                (slideInVertically(animationSpec = tween(400, easing = FastOutSlowInEasing)) { -(it * 0.25f).toInt() } +
-                                        fadeIn(animationSpec = tween(280)))
-                                    .togetherWith(
-                                        slideOutVertically(animationSpec = tween(380, easing = FastOutSlowInEasing)) { (it * 0.70f).toInt() } +
-                                                fadeOut(animationSpec = tween(220))
-                                    )
-                            } else {
-                                fadeIn(animationSpec = tween(220))
-                                    .togetherWith(fadeOut(animationSpec = tween(180)))
-                            }
-                        }
-                    ) { target ->
-                        when (target) {
-                            Screen.HOME -> {
-                                if (theme == AppTheme.LIQUID_MORPHISM) {
-                                    LiquidHomeScreen(
-                                        favoriteApps = favoriteApps,
-                                        onAppClick = { viewModel.onAppClick(it) },
-                                        onAppLongClick = { viewModel.selectedAppForActions.value = it },
-                                        onWeatherClick = { viewModel.repository.openClock() },
-                                        onCalendarClick = { viewModel.repository.openCalendar() },
-                                        onOpenDrawer = { viewModel.currentScreen.value = Screen.DRAWER },
-                                        onUpiScanClick = { viewModel.repository.openPaymentScanner(paymentApp) },
-                                        onQuickDial = { viewModel.repository.openDialer() },
-                                        onSwipeRight = { viewModel.repository.openDialer() },
-                                        onSwipeLeft = { viewModel.currentScreen.value = Screen.DRAWER },
-                                        fontColor = fontColor,
-                                        atmosphere = atmosphere
-                                    )
-                                } else {
-                                    HomeScreen(
-                                        favoriteApps = favoriteApps,
-                                        onAppClick = { viewModel.onAppClick(it) },
-                                        onAppLongClick = { viewModel.selectedAppForActions.value = it },
-                                        onTimeClick = { viewModel.repository.openClock() },
-                                        onDateClick = { viewModel.repository.openCalendar() },
-                                        onOpenDrawer = { viewModel.currentScreen.value = Screen.DRAWER },
-                                        onOpenSettings = { viewModel.currentScreen.value = Screen.SETTINGS },
-                                        onSwipeRight = { viewModel.repository.openDialer() },
-                                        onSwipeLeft = { viewModel.repository.openCamera() }
-                                    )
-                                }
-                            }
-
-                            Screen.DRAWER -> AppDrawerScreen(
-                                apps = visibleApps,
-                                searchQuery = searchQuery,
-                                onSearchQueryChange = { viewModel.searchQuery.value = it },
-                                onAppClick = { viewModel.onAppClick(it) },
-                                onAppLongClick = { viewModel.selectedAppForActions.value = it },
-                                onBack = {
-                                    viewModel.searchQuery.value = ""
-                                    viewModel.currentScreen.value = Screen.HOME
-                                },
-                                onOpenSettings = { viewModel.currentScreen.value = Screen.SETTINGS },
-                                atmosphere = atmosphere,
-                                fontColor = fontColor
-                            )
-
-                            Screen.SETTINGS -> SettingsScreen(
-                                currentTheme = theme,
-                                onThemeSelect = { viewModel.setTheme(it) },
-                                currentAtmosphere = atmosphere,
-                                onAtmosphereSelect = { viewModel.setAtmosphere(it) },
-                                fontColor = fontColor,
-                                onFontColorSelect = { viewModel.setFontColor(it) },
-                                selectedPaymentApp = paymentApp,
-                                onPaymentAppSelect = { viewModel.setPaymentApp(it) },
-                                onOpenHiddenApps = { viewModel.currentScreen.value = Screen.HIDDEN_APPS },
-                                onBack = { viewModel.currentScreen.value = Screen.HOME }
-                            )
-
-                            Screen.HIDDEN_APPS -> HiddenAppsScreen(
-                                hiddenApps = hiddenApps,
-                                onUnhideApp = { viewModel.unhideApp(it) },
-                                onBack = { viewModel.currentScreen.value = Screen.SETTINGS }
-                            )
-                        }
+                    val camera = Intent(android.provider.MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     }
-
-                    // Mindful Delay Interceptor Dialog
-                    activeMindfulApp?.let { app ->
-                        MindfulDelayDialog(
-                            app = app,
-                            onConfirmOpen = { viewModel.confirmMindfulOpen() },
-                            onCancel = { viewModel.cancelMindfulOpen() }
-                        )
-                    }
-
-                    // Long-Press Action Sheet
-                    selectedAppForActions?.let { app ->
-                        AppActionBottomSheet(
-                            app = app,
-                            onDismiss = { viewModel.selectedAppForActions.value = null },
-                            onToggleFavorite = { viewModel.toggleFavorite(app) },
-                            onHideApp = { viewModel.hideApp(app) },
-                            onRenameApp = { newName -> viewModel.renameApp(app, newName) },
-                            onSetMindfulDelay = { delaySec -> viewModel.setMindfulDelay(app, delaySec) },
-                            onOpenAppInfo = { viewModel.repository.openAppInfo(app.packageName) },
-                            onRequestUninstall = { viewModel.repository.requestUninstall(app.packageName) }
-                        )
+                    if (camera.resolveActivity(context.packageManager) != null) {
+                        context.startActivity(camera)
                     }
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
+        }
+
+        @JavascriptInterface
+        fun openGallery() {
+            (context as? MainActivity)?.openGalleryPicker()
         }
     }
 }

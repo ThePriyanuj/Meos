@@ -24,4 +24,7 @@ __pycache__/
 *$py.class
 *.log
 
+# Screenshots & temporary test captures
+*.png
+
 reference/
