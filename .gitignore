@@ -26,5 +26,6 @@ __pycache__/
 
 # Screenshots & temporary test captures
 *.png
+!playstore_assets/**
 
 reference/
