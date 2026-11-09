@@ -150,3 +150,4 @@ In the **Images** section:
 1. Review all sections (Green checkmarks will indicate completion).
 2. Click the **Submit** button in the upper right.
 3. Your app will enter **Under Review** status (typically approved within 2 to 4 business days).
+

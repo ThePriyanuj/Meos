@@ -329,20 +329,28 @@ class MainActivity : ComponentActivity() {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com")).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
-                if (intent.resolveActivity(context.packageManager) != null) {
-                    context.startActivity(intent)
-                    return
-                }
-                val browsers = listOf("com.android.chrome", "com.brave.browser", "org.mozilla.firefox", "com.sec.android.app.sbrowser")
-                for (b in browsers) {
-                    val launch = context.packageManager.getLaunchIntentForPackage(b)
-                    if (launch != null) {
-                        launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        context.startActivity(launch)
-                        return
-                    }
-                }
+                context.startActivity(intent)
+                return
             } catch (e: Exception) {
+                val browsers = listOf(
+                    "com.android.chrome",
+                    "com.google.android.apps.chrome",
+                    "com.brave.browser",
+                    "org.mozilla.firefox",
+                    "com.sec.android.app.sbrowser",
+                    "com.heytap.browser",
+                    "com.coloros.browser"
+                )
+                for (b in browsers) {
+                    try {
+                        val launch = context.packageManager.getLaunchIntentForPackage(b)
+                        if (launch != null) {
+                            launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            context.startActivity(launch)
+                            return
+                        }
+                    } catch (_: Exception) {}
+                }
                 e.printStackTrace()
             }
         }

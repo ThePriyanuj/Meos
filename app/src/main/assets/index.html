@@ -793,7 +793,7 @@
     </div>
 
     <!-- ================= ALL APPS SCREEN ================= -->
-    <div id="drawerScreen" class="absolute inset-x-0 top-[96px] bottom-20 px-6 flex flex-col z-20 opacity-0 pointer-events-none translate-y-16 transition-all duration-[380ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
+    <div id="drawerScreen" style="display: none;" class="absolute inset-x-0 top-[96px] bottom-20 px-6 flex flex-col z-20 opacity-0 pointer-events-none translate-y-16 transition-all duration-[380ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
       <!-- Apps List and Alphabet Scrubber -->
       <div class="flex-1 relative flex overflow-hidden">
         <div class="flex-1 overflow-y-auto hide-scrollbar py-2 space-y-2 pr-2" id="allAppsList">
@@ -1794,9 +1794,12 @@
       }, 380);
 
       // 4. Drawer Screen Slides In Upward in Exact Sync
-      drawerScreen.style.transform = 'translate3d(0, 0, 0)';
-      drawerScreen.style.opacity = '1';
-      drawerScreen.style.pointerEvents = 'auto';
+      drawerScreen.style.display = 'flex';
+      requestAnimationFrame(() => {
+        drawerScreen.style.transform = 'translate3d(0, 0, 0)';
+        drawerScreen.style.opacity = '1';
+        drawerScreen.style.pointerEvents = 'auto';
+      });
 
       renderAllApps();
       setTimeout(() => {
@@ -1840,6 +1843,11 @@
       drawerScreen.style.transform = 'translate3d(0, 64px, 0)';
       drawerScreen.style.opacity = '0';
       drawerScreen.style.pointerEvents = 'none';
+      setTimeout(() => {
+        if (!isDrawerOpen) {
+          drawerScreen.style.display = 'none';
+        }
+      }, 380);
 
       // 4. Home Screen Slides In Downward in Exact Sync
       homeScreen.style.display = '';
@@ -2393,6 +2401,16 @@
     let touchHandled = false;
 
     function handleGestureStart(clientX, clientY, target) {
+      // Check if Context Menu is open - close on tap outside
+      const ctx = document.getElementById('contextMenu');
+      if (ctx && !ctx.classList.contains('hidden')) {
+        if (!target || !target.closest || !target.closest('.water-dock')) {
+          closeContextMenu();
+        }
+        isTrackingGesture = false;
+        return;
+      }
+
       // Ignore interactions on alphabet scrubber or unified banner
       if (target && target.closest && (target.closest('#scrubber') || target.closest('#unifiedBanner'))) {
         isTrackingGesture = false;
