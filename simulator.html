@@ -493,6 +493,46 @@
       background-color: #000000 !important;
     }
 
+    /* ================= TODO SCREEN & LOCK SCREEN ================= */
+    #todoScreen {
+      background: rgba(10, 14, 24, 0.55);
+      backdrop-filter: blur(36px);
+      -webkit-backdrop-filter: blur(36px);
+      color: rgba(255, 255, 255, 0.95);
+    }
+    .theme-light #todoScreen {
+      background: rgba(248, 250, 252, 0.78) !important;
+      color: #0f172a !important;
+    }
+    .font-black #todoScreen,
+    .font-black #todoScreen * {
+      color: #000000 !important;
+    }
+    .font-white #todoScreen,
+    .font-white #todoScreen * {
+      color: #ffffff !important;
+    }
+
+    /* Dynamic Font Size Scaling */
+    .font-size-small .water-drop-app-text {
+      font-size: 19px !important;
+    }
+    .font-size-small #allAppsList .water-drop-app-text {
+      font-size: 17px !important;
+    }
+    .font-size-regular .water-drop-app-text {
+      font-size: 23px !important;
+    }
+    .font-size-regular #allAppsList .water-drop-app-text {
+      font-size: 20px !important;
+    }
+    .font-size-large .water-drop-app-text {
+      font-size: 27px !important;
+    }
+    .font-size-large #allAppsList .water-drop-app-text {
+      font-size: 24px !important;
+    }
+
     /* ================= CLEAR GLASS TEXT APPS (MINIMALIST, ZERO CARDS, RAZOR-SHARP) ================= */
     .water-drop-app-text {
       position: relative;
@@ -645,10 +685,10 @@
   <div class="relative w-[365px] h-[750px] rounded-[46px] phone-chassis overflow-hidden flex flex-col select-none transition-all duration-300 bg-alpine font-white" id="phoneContainer">
 
     <!-- ================= HOME SCREEN ================= -->
-    <div id="homeScreen" class="absolute inset-x-0 top-7 bottom-20 px-7 flex flex-col justify-between z-20 transition-all duration-[380ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
+    <div id="homeScreen" onclick="onHomeScreenClick(event)" class="absolute inset-x-0 top-7 bottom-20 px-7 flex flex-col justify-between z-20 transition-all duration-[380ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
       
       <!-- 1. Top Section: Clean Minimalist Date & Longitudinal Water Drop Clock -->
-      <div class="pt-2 select-none cursor-pointer flex flex-col items-center" onclick="showToast('Opened Clock & Calendar')">
+      <div class="pt-2 select-none cursor-pointer flex flex-col items-center" onclick="openClockApp()">
         <!-- Date Header: Sharp, Crisp Luxury Spacing (No line/status bar above) -->
         <div class="flex items-center justify-center text-[12.5px] font-semibold tracking-[0.28em] uppercase text-white/95 drop-shadow-sm" id="dateHeader">
           <span>Sun, Nov 8</span>
@@ -815,10 +855,10 @@
             </div>
           </div>
 
-          <!-- Alarm clock app shortcut -->
-          <div onclick="cycleAlarmShortcut()" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
-            <span class="text-[13.5px] font-normal lowercase">alarm clock app shortcut</span>
-            <span id="labelAlarmShortcut" class="settings-subtext text-[12px] lowercase">clock</span>
+          <!-- Clock shortcut -->
+          <div onclick="cycleClockShortcut()" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] font-normal lowercase">clock shortcut</span>
+            <span id="labelClockShortcut" class="settings-subtext text-[12px] lowercase">clock</span>
           </div>
 
           <!-- Time format -->
@@ -1074,6 +1114,48 @@
         </div>
       </div>
 
+      <!-- 7. HIDDEN APPS SUB-VIEW -->
+      <div id="settingsViewHidden" class="hidden flex-1 flex flex-col">
+        <!-- Header -->
+        <div class="flex items-center justify-between pb-3.5 border-b border-white/10 settings-divider">
+          <button onclick="openSettingsView('home')" class="flex items-center space-x-1.5 text-[14px] font-medium lowercase hover:opacity-70 transition-opacity">
+            <span class="settings-chevron font-light text-base">&lt;</span>
+            <span>hidden apps</span>
+          </button>
+          <button onclick="goHome()" class="text-[12px] font-medium lowercase opacity-70 hover:opacity-100 transition-opacity">done</button>
+        </div>
+
+        <!-- Hidden Apps List -->
+        <div id="hiddenAppsList" class="flex-1 overflow-y-auto hide-scrollbar pt-2 space-y-1">
+          <!-- Populated by renderHiddenAppsList() -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= MINIMALIST TO-DO LIST (SWIPE RIGHT GESTURE) ================= -->
+    <div id="todoScreen" class="hidden absolute inset-0 z-40 flex flex-col pt-8 pb-5 px-6 backdrop-blur-3xl transition-all duration-300">
+      <div class="flex items-center justify-between pb-3.5 border-b border-white/10 settings-divider">
+        <div class="text-[14.5px] font-medium lowercase tracking-wide">tasks</div>
+        <button onclick="closeTodoScreen()" class="text-[12px] font-medium lowercase opacity-70 hover:opacity-100 transition-opacity">done</button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto hide-scrollbar pt-3 space-y-1" id="todoItemsList">
+        <!-- Rendered by renderTodos() -->
+      </div>
+
+      <div class="pt-3 border-t border-white/10 settings-divider flex items-center space-x-2">
+        <input type="text" id="newTodoInput" placeholder="+ add task..." 
+               class="flex-1 bg-transparent border-none outline-none text-[13.5px] lowercase placeholder:opacity-40"
+               onkeydown="if(event.key === 'Enter') addTodoItem()">
+        <button onclick="addTodoItem()" class="text-[12px] font-medium lowercase opacity-70 hover:opacity-100 px-2 py-1">add</button>
+      </div>
+    </div>
+
+    <!-- ================= SCREEN LOCK OVERLAY (DOUBLE-TAP GESTURE) ================= -->
+    <div id="lockScreenOverlay" class="hidden absolute inset-0 z-50 bg-black flex flex-col items-center justify-center p-6 text-center select-none cursor-pointer" onclick="unlockScreen()">
+      <div class="text-5xl font-extralight tracking-tight text-white/90 mb-2" id="lockClockHours">2:45</div>
+      <div class="text-[11px] text-white/40 tracking-widest lowercase">tap to wake</div>
     </div>
 
     <!-- ================= MINDFUL DELAY INTERCEPTOR (BREATHING CIRCLE) ================= -->
@@ -1455,11 +1537,16 @@
       renderAllApps();
       setTimeout(() => {
         const input = document.getElementById('searchInput');
-        if (input && isDrawerOpen) input.focus();
+        if (input && isDrawerOpen && settingsState.autoKeyboard) input.focus();
       }, 350);
     }
 
     function goHome() {
+      const todo = document.getElementById('todoScreen');
+      if (todo && !todo.classList.contains('hidden')) {
+        closeTodoScreen();
+        return;
+      }
       if (!document.getElementById('settingsScreen').classList.contains('hidden')) {
         document.getElementById('settingsScreen').classList.add('hidden');
         openSettingsView('main');
@@ -1506,6 +1593,8 @@
 
     // ================= LAUNCHER SETTINGS STATE & LOGIC =================
     const settingsState = {
+      dialerApp: 'phone',
+      clockApp: 'clock',
       autoKeyboard: true,
       matchLockScreen: true,
       swipeSearch: true,
@@ -1514,11 +1603,14 @@
     };
 
     function openSettingsView(viewName) {
-      const views = ['main', 'home', 'display', 'gestures', 'theme', 'scanner'];
+      const views = ['main', 'home', 'display', 'gestures', 'theme', 'scanner', 'hidden'];
       views.forEach(v => {
         const el = document.getElementById(`settingsView${v.charAt(0).toUpperCase() + v.slice(1)}`);
         if (el) el.classList.toggle('hidden', v !== viewName);
       });
+      if (viewName === 'hidden') {
+        renderHiddenAppsList();
+      }
     }
 
     function toggleSetting(key) {
@@ -1538,7 +1630,7 @@
       }
       const titles = {
         autoKeyboard: 'automatically open keyboard',
-        matchLockScreen: 'lock screen background',
+        matchLockScreen: 'matching lock screen background',
         swipeSearch: 'swipe left to open search',
         swipeTodo: 'swipe right to open to do list',
         doubleTapLock: 'double-tap to lock'
@@ -1561,26 +1653,147 @@
     }
 
     let fontSizeIdx = 0;
-    const fontSizes = ['regular', 'small', 'large'];
+    const fontSizes = ['regular', 'large', 'small'];
     function cycleFontSize() {
       fontSizeIdx = (fontSizeIdx + 1) % fontSizes.length;
       const size = fontSizes[fontSizeIdx];
+      const phone = document.getElementById('phoneContainer');
+      phone.classList.remove('font-size-small', 'font-size-regular', 'font-size-large');
+      phone.classList.add(`font-size-${size}`);
       const label = document.getElementById('labelFontSize');
       if (label) label.textContent = size;
       showToast(`font size: ${size}`);
     }
 
+    const dialerAppsList = ['phone', 'google dialer', 'whatsapp call', 'contacts'];
+    let dialerAppIdx = 0;
     function cycleDialerShortcut() {
-      showToast('dialer shortcut: phone');
+      dialerAppIdx = (dialerAppIdx + 1) % dialerAppsList.length;
+      settingsState.dialerApp = dialerAppsList[dialerAppIdx];
+      const label = document.getElementById('labelDialerShortcut');
+      if (label) label.textContent = settingsState.dialerApp;
+      showToast(`dialer shortcut: ${settingsState.dialerApp}`);
     }
 
-    function cycleAlarmShortcut() {
-      showToast('alarm clock app shortcut: clock');
+    function quickDial() {
+      showToast(`opening ${settingsState.dialerApp || 'phone'}...`);
+    }
+
+    const clockAppsList = ['clock', 'google clock', 'alarm', 'timer'];
+    let clockAppIdx = 0;
+    function cycleClockShortcut() {
+      clockAppIdx = (clockAppIdx + 1) % clockAppsList.length;
+      settingsState.clockApp = clockAppsList[clockAppIdx];
+      const label = document.getElementById('labelClockShortcut');
+      if (label) label.textContent = settingsState.clockApp;
+      showToast(`clock shortcut: ${settingsState.clockApp}`);
+    }
+
+    function openClockApp() {
+      showToast(`opening ${settingsState.clockApp || 'clock'}...`);
     }
 
     function openHiddenAppsList() {
+      openSettingsView('hidden');
+    }
+
+    function renderHiddenAppsList() {
+      const container = document.getElementById('hiddenAppsList');
+      if (!container) return;
       const hidden = apps.filter(a => a.hidden);
-      showToast(`hidden apps: ${hidden.length} apps`);
+      const label = document.getElementById('labelHiddenApps');
+      if (label) label.textContent = `${hidden.length} apps`;
+
+      if (hidden.length === 0) {
+        container.innerHTML = `
+          <div class="text-xs settings-subtext text-center py-12 lowercase leading-relaxed">
+            no hidden apps.<br><br>to hide an app: right-click or hold any app in all apps drawer.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = hidden.map(app => `
+        <div class="settings-row flex items-center justify-between py-2.5 px-2 rounded-xl transition-colors">
+          <span class="text-[13.5px] lowercase">${app.name}</span>
+          <button onclick="unhideApp('${app.id}')" class="text-xs text-cyan-400 hover:text-white px-2.5 py-1 rounded bg-white/10 lowercase transition-colors">
+            unhide
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function unhideApp(id) {
+      const app = apps.find(a => a.id === id);
+      if (app) {
+        app.hidden = false;
+        renderHiddenAppsList();
+        renderFavorites();
+        renderAllApps(document.getElementById('searchInput').value);
+        showToast(`unhidden: ${app.name}`);
+      }
+    }
+
+    // ================= TO DO LIST / TASKS (SWIPE RIGHT GESTURE) =================
+    let todoItems = [
+      { id: 1, text: 'focus on deep work', done: false },
+      { id: 2, text: 'take mindful pause', done: true },
+      { id: 3, text: 'review daily schedule', done: false }
+    ];
+
+    function openTodoScreen() {
+      renderTodos();
+      document.getElementById('todoScreen').classList.remove('hidden');
+    }
+
+    function closeTodoScreen() {
+      document.getElementById('todoScreen').classList.add('hidden');
+    }
+
+    function renderTodos() {
+      const container = document.getElementById('todoItemsList');
+      if (!container) return;
+      if (todoItems.length === 0) {
+        container.innerHTML = `<div class="text-xs settings-subtext text-center py-10 lowercase">no tasks yet.<br>stay clear and present.</div>`;
+        return;
+      }
+      container.innerHTML = todoItems.map(item => `
+        <div class="settings-row flex items-center justify-between py-2.5 px-2 rounded-xl cursor-pointer transition-colors" onclick="toggleTodoItem(${item.id})">
+          <span class="text-[13.5px] lowercase ${item.done ? 'line-through opacity-40' : ''}">${item.text}</span>
+          <span class="text-xs opacity-60">${item.done ? '✓' : '○'}</span>
+        </div>
+      `).join('');
+    }
+
+    function toggleTodoItem(id) {
+      const item = todoItems.find(t => t.id === id);
+      if (item) item.done = !item.done;
+      renderTodos();
+    }
+
+    function addTodoItem() {
+      const input = document.getElementById('newTodoInput');
+      if (!input || !input.value.trim()) return;
+      todoItems.push({ id: Date.now(), text: input.value.trim(), done: false });
+      input.value = '';
+      renderTodos();
+    }
+
+    // ================= SCREEN LOCK (DOUBLE-TAP GESTURE) =================
+    function lockScreen() {
+      const overlay = document.getElementById('lockScreenOverlay');
+      const lockHours = document.getElementById('lockClockHours');
+      const now = new Date();
+      let hNum = now.getHours();
+      if (!is24Hour) hNum = hNum % 12 || 12;
+      const m = String(now.getMinutes()).padStart(2, '0');
+      if (lockHours) lockHours.textContent = `${hNum}:${m}`;
+      overlay.classList.remove('hidden');
+    }
+
+    function unlockScreen() {
+      document.getElementById('lockScreenOverlay').classList.add('hidden');
+      showToast('screen unlocked');
     }
 
     function recommendToFriend() {
@@ -1745,7 +1958,61 @@
 
     function isHomeScreenActive() {
       const settings = document.getElementById('settingsScreen');
-      return !isDrawerOpen && (!settings || settings.classList.contains('hidden'));
+      const todo = document.getElementById('todoScreen');
+      const lock = document.getElementById('lockScreenOverlay');
+      return !isDrawerOpen && 
+        (!settings || settings.classList.contains('hidden')) && 
+        (!todo || todo.classList.contains('hidden')) &&
+        (!lock || lock.classList.contains('hidden'));
+    }
+
+    let lastTapTime = 0;
+    function onHomeScreenClick(e) {
+      if (!isHomeScreenActive()) return;
+      if (e.target.closest('button') || e.target.closest('#favoriteAppsContainer') || e.target.closest('#clockWrapper') || e.target.closest('#dateHeader')) return;
+      
+      const currentTime = new Date().getTime();
+      const tapInterval = currentTime - lastTapTime;
+      if (tapInterval < 320 && tapInterval > 50) {
+        if (settingsState.doubleTapLock) {
+          lockScreen();
+        }
+      }
+      lastTapTime = currentTime;
+    }
+
+    function handleHomeSwipe(startX, startY, endX, endY) {
+      if (!isHomeScreenActive()) return;
+      const deltaY = startY - endY; // positive when swiping up
+      const rawDeltaX = startX - endX; // positive when swiping left, negative when swiping right
+      const absX = Math.abs(rawDeltaX);
+      const absY = Math.abs(deltaY);
+
+      // 1. Slide up -> Open All Apps Drawer
+      if (deltaY > 20 && deltaY > absX * 0.45) {
+        openDrawer();
+        return;
+      }
+
+      // 2. Swipe Left -> Open Search (if enabled)
+      if (rawDeltaX > 30 && absX > absY * 0.7) {
+        if (settingsState.swipeSearch) {
+          openDrawer();
+          setTimeout(() => {
+            const input = document.getElementById('searchInput');
+            if (input) input.focus();
+          }, 350);
+        }
+        return;
+      }
+
+      // 3. Swipe Right -> Open To Do List (if enabled)
+      if (rawDeltaX < -30 && absX > absY * 0.7) {
+        if (settingsState.swipeTodo) {
+          openTodoScreen();
+        }
+        return;
+      }
     }
 
     // 1. Mouse Wheel & Trackpad Scroll on Home Screen
@@ -1769,13 +2036,7 @@
       if (!isSwiping) return;
       isSwiping = false;
       if (!e.changedTouches || e.changedTouches.length === 0) return;
-      const deltaY = touchStartY - e.changedTouches[0].clientY; // Positive when swiping up
-      const deltaX = Math.abs(touchStartX - e.changedTouches[0].clientX);
-
-      // Slide up: 20px+ vertical upward drag
-      if (deltaY > 20 && deltaY > deltaX * 0.4) {
-        openDrawer();
-      }
+      handleHomeSwipe(touchStartX, touchStartY, e.changedTouches[0].clientX, e.changedTouches[0].clientY);
     }, { passive: true });
 
     // 3. Desktop Mouse / Pointer Dragging Up
@@ -1789,12 +2050,7 @@
     window.addEventListener('pointerup', (e) => {
       if (!isSwiping) return;
       isSwiping = false;
-      const deltaY = touchStartY - e.clientY;
-      const deltaX = Math.abs(touchStartX - e.clientX);
-
-      if (deltaY > 20 && deltaY > deltaX * 0.4) {
-        openDrawer();
-      }
+      handleHomeSwipe(touchStartX, touchStartY, e.clientX, e.clientY);
     });
 
     // Swipe Down / Scroll Down in App Drawer to Return Home

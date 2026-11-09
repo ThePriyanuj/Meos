@@ -198,8 +198,8 @@ fun SettingsScreen(
                         SettingsNavRow("scanner shortcut", "google pay", contentColor, subtextColor) {
                             currentSection = "scanner"
                         }
-                        SettingsInfoRow("alarm clock app shortcut", "clock", contentColor, subtextColor) {
-                            Toast.makeText(context, "alarm clock shortcut: clock", Toast.LENGTH_SHORT).show()
+                        SettingsInfoRow("clock shortcut", "clock", contentColor, subtextColor) {
+                            Toast.makeText(context, "clock shortcut: clock", Toast.LENGTH_SHORT).show()
                         }
                         SettingsInfoRow("time format", if (is24Hour) "24-hour" else "12-hour", contentColor, subtextColor) {
                             is24Hour = !is24Hour
