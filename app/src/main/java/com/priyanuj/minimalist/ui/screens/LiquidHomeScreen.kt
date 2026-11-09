@@ -72,12 +72,14 @@ fun LiquidHomeScreen(
     onOpenDrawer: () -> Unit = {},
     onUpiScanClick: () -> Unit = {},
     onQuickDial: () -> Unit = {},
+    fontColor: com.priyanuj.minimalist.data.FontColor = com.priyanuj.minimalist.data.FontColor.WHITE,
     timeHours: String = "21",
     timeMinutes: String = "41",
     dateString: String = "Sun, Nov 8",
     screenTimeString: String = "",
     modifier: Modifier = Modifier
 ) {
+    val isBlack = fontColor == com.priyanuj.minimalist.data.FontColor.BLACK
     var totalDragX by remember { mutableFloatStateOf(0f) }
     var totalDragY by remember { mutableFloatStateOf(0f) }
 
@@ -169,9 +171,9 @@ fun LiquidHomeScreen(
                         text = liveDate,
                         fontSize = 12.5.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color.White.copy(alpha = 0.95f),
+                        color = if (isBlack) Color.Black else Color.White.copy(alpha = 0.95f),
                         letterSpacing = 2.8.sp,
-                        style = androidx.compose.ui.text.TextStyle(
+                        style = if (isBlack) androidx.compose.ui.text.TextStyle() else androidx.compose.ui.text.TextStyle(
                             shadow = Shadow(
                                 color = Color(0x80000000),
                                 offset = Offset(0f, 1f),
@@ -196,7 +198,7 @@ fun LiquidHomeScreen(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         // Hours
-                        ClearGlassNumeral(text = liveHours)
+                        ClearGlassNumeral(text = liveHours, isBlack = isBlack)
 
                         // 3D Clear Glass Colon Droplets (Harmonious vertical spacing & sharp caustics)
                         Column(
@@ -204,12 +206,12 @@ fun LiquidHomeScreen(
                             verticalArrangement = Arrangement.spacedBy(36.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            GlassColonSphere()
-                            GlassColonSphere()
+                            GlassColonSphere(isBlack = isBlack)
+                            GlassColonSphere(isBlack = isBlack)
                         }
 
                         // Minutes
-                        ClearGlassNumeral(text = liveMinutes)
+                        ClearGlassNumeral(text = liveMinutes, isBlack = isBlack)
                     }
                 }
             }
@@ -239,7 +241,8 @@ fun LiquidHomeScreen(
                             ClearGlassAppRow(
                                 app = app,
                                 onClick = { onAppClick(app) },
-                                onLongClick = { onAppLongClick(app) }
+                                onLongClick = { onAppLongClick(app) },
+                                isBlack = isBlack
                             )
                         }
                     }
@@ -266,7 +269,7 @@ fun LiquidHomeScreen(
                         Icon(
                             imageVector = Icons.Outlined.Call,
                             contentDescription = "Phone",
-                            tint = Color.White.copy(alpha = 0.95f),
+                            tint = if (isBlack) Color.Black else Color.White.copy(alpha = 0.95f),
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -279,7 +282,7 @@ fun LiquidHomeScreen(
                         Icon(
                             imageVector = Icons.Outlined.QrCodeScanner,
                             contentDescription = "Scan to Pay (UPI)",
-                            tint = Color.White.copy(alpha = 0.95f),
+                            tint = if (isBlack) Color.Black else Color.White.copy(alpha = 0.95f),
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -296,31 +299,36 @@ fun LiquidHomeScreen(
  * No stroke, no borders—refracts the background image like a clear pool of water with sharp edges.
  */
 @Composable
-fun ClearGlassNumeral(text: String) {
+fun ClearGlassNumeral(text: String, isBlack: Boolean = false) {
     Text(
         text = text,
         fontSize = 136.sp,
         fontWeight = FontWeight.Normal,
         letterSpacing = (-1).sp,
         fontFamily = FontFamily.SansSerif,
+        color = if (isBlack) Color.Black else Color.Unspecified,
         modifier = Modifier.graphicsLayer {
             scaleY = 1.36f
             scaleX = 1.214f // Expanded latitudinal length
         },
-        style = androidx.compose.ui.text.TextStyle(
-            brush = Brush.verticalGradient(
-                colors = listOf(
-                    Color.White.copy(alpha = 0.65f), // Top specular liquid meniscus crest (matches ':' colon drop)
-                    Color.White.copy(alpha = 0.12f), // Crystal clear liquid water interior
-                    Color(0x33001026)                // Bottom refractive optical shadow
+        style = if (isBlack) {
+            androidx.compose.ui.text.TextStyle()
+        } else {
+            androidx.compose.ui.text.TextStyle(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.65f), // Top specular liquid meniscus crest (matches ':' colon drop)
+                        Color.White.copy(alpha = 0.12f), // Crystal clear liquid water interior
+                        Color(0x33001026)                // Bottom refractive optical shadow
+                    )
+                ),
+                shadow = Shadow(
+                    color = Color(0x99001026),
+                    offset = Offset(0f, 1.5f),
+                    blurRadius = 2f
                 )
-            ),
-            shadow = Shadow(
-                color = Color(0x99001026),
-                offset = Offset(0f, 1.5f),
-                blurRadius = 2f
             )
-        )
+        }
     )
 }
 
@@ -328,26 +336,34 @@ fun ClearGlassNumeral(text: String) {
  * Water Drop Spherical Colon (Zero boundary, Sharp Caustics - Matched with Text Color).
  */
 @Composable
-fun GlassColonSphere() {
+fun GlassColonSphere(isBlack: Boolean = false) {
     Canvas(modifier = Modifier.size(12.dp)) {
-        // Drop shadow matching ClearGlassNumeral text shadow
-        drawCircle(
-            color = Color(0x99001026),
-            radius = size.minDimension / 2f,
-            center = Offset(center.x, center.y + 1.5f)
-        )
-        // Water Drop lens with vertical gradient exactly matching ClearGlassNumeral text brush
-        drawCircle(
-            brush = Brush.verticalGradient(
-                colors = listOf(
-                    Color.White.copy(alpha = 0.65f), // Top specular liquid meniscus crest (matches numeral text)
-                    Color.White.copy(alpha = 0.12f), // Crystal clear liquid water interior
-                    Color(0x33001026)                // Bottom refractive optical shadow
-                )
-            ),
-            radius = size.minDimension / 2f,
-            center = center
-        )
+        if (isBlack) {
+            drawCircle(
+                color = Color.Black,
+                radius = size.minDimension / 2f,
+                center = center
+            )
+        } else {
+            // Drop shadow matching ClearGlassNumeral text shadow
+            drawCircle(
+                color = Color(0x99001026),
+                radius = size.minDimension / 2f,
+                center = Offset(center.x, center.y + 1.5f)
+            )
+            // Water Drop lens with vertical gradient exactly matching ClearGlassNumeral text brush
+            drawCircle(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.65f), // Top specular liquid meniscus crest (matches numeral text)
+                        Color.White.copy(alpha = 0.12f), // Crystal clear liquid water interior
+                        Color(0x33001026)                // Bottom refractive optical shadow
+                    )
+                ),
+                radius = size.minDimension / 2f,
+                center = center
+            )
+        }
     }
 }
 
@@ -358,7 +374,8 @@ fun GlassColonSphere() {
 fun ClearGlassAppRow(
     app: AppModel,
     onClick: () -> Unit,
-    onLongClick: () -> Unit
+    onLongClick: () -> Unit,
+    isBlack: Boolean = false
 ) {
     Row(
         modifier = Modifier
@@ -375,20 +392,25 @@ fun ClearGlassAppRow(
             fontSize = 23.sp,
             fontWeight = FontWeight.Normal,
             letterSpacing = 3.2.sp, // Expanded latitudinal tracking
-            style = androidx.compose.ui.text.TextStyle(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.White.copy(alpha = 0.55f), // Top specular crest
-                        Color.White.copy(alpha = 0.14f), // Crystal clear liquid body
-                        Color(0x26001026)                // Bottom lens shade
+            color = if (isBlack) Color.Black else Color.Unspecified,
+            style = if (isBlack) {
+                androidx.compose.ui.text.TextStyle()
+            } else {
+                androidx.compose.ui.text.TextStyle(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.White.copy(alpha = 0.55f), // Top specular crest
+                            Color.White.copy(alpha = 0.14f), // Crystal clear liquid body
+                            Color(0x26001026)                // Bottom lens shade
+                        )
+                    ),
+                    shadow = Shadow(
+                        color = Color(0xCC001026),
+                        offset = Offset(0f, 1.2f),
+                        blurRadius = 1.5f
                     )
-                ),
-                shadow = Shadow(
-                    color = Color(0xCC001026),
-                    offset = Offset(0f, 1.2f),
-                    blurRadius = 1.5f
                 )
-            )
+            }
         )
 
         if (app.mindfulDelaySeconds > 0) {

@@ -224,6 +224,122 @@
       color: rgba(20, 25, 35, 0.5) !important;
     }
 
+    /* ================= DYNAMIC FONT COLOR: BLACK OVERRIDE ================= */
+    .font-black .water-drop-numeral-long {
+      color: #000000 !important;
+      -webkit-text-fill-color: #000000 !important;
+      background: none !important;
+      -webkit-background-clip: unset !important;
+      background-clip: unset !important;
+      text-shadow: none !important;
+      filter: none !important;
+      -webkit-text-stroke: 0px transparent !important;
+    }
+
+    .font-black .water-drop-colon-dot {
+      background: #000000 !important;
+      background-image: none !important;
+      box-shadow: none !important;
+      filter: none !important;
+    }
+
+    .font-black #dateHeader,
+    .font-black #dateHeader * {
+      color: #000000 !important;
+      text-shadow: none !important;
+      filter: none !important;
+    }
+
+    .font-black .water-drop-app-text {
+      color: #000000 !important;
+      -webkit-text-fill-color: #000000 !important;
+      background: none !important;
+      -webkit-background-clip: unset !important;
+      background-clip: unset !important;
+      text-shadow: none !important;
+      filter: none !important;
+    }
+
+    .font-black #favoriteAppsContainer {
+      color: #000000 !important;
+    }
+
+    /* Banner Dock & All Icons (Phone, Scanner, Search, Settings) */
+    .font-black #unifiedBanner {
+      border-color: rgba(0, 0, 0, 0.25) !important;
+    }
+
+    .font-black #bannerPhoneBtn,
+    .font-black #bannerPhoneBtn svg {
+      color: #000000 !important;
+      stroke: #000000 !important;
+    }
+
+    .font-black #bannerUpiBtn,
+    .font-black #bannerUpiBtn svg {
+      color: #000000 !important;
+      stroke: #000000 !important;
+    }
+
+    .font-black #bannerSearchIcon,
+    .font-black #bannerSearchIcon svg {
+      color: #000000 !important;
+      fill: #000000 !important;
+    }
+
+    .font-black #bannerSettingsBtn,
+    .font-black #bannerSettingsBtn svg {
+      color: #000000 !important;
+      fill: #000000 !important;
+    }
+
+    .font-black #bannerHomeTap div {
+      background-color: rgba(0, 0, 0, 0.5) !important;
+    }
+
+    .font-black #bannerSearchBox input {
+      color: #000000 !important;
+    }
+
+    .font-black #bannerSearchBox input::placeholder {
+      color: rgba(0, 0, 0, 0.45) !important;
+    }
+
+    .font-black #clearSearchBtn {
+      color: #000000 !important;
+    }
+
+    /* All Apps Drawer */
+    .font-black #drawerScreen {
+      color: #000000 !important;
+    }
+
+    .font-black #allAppsList div {
+      color: #000000 !important;
+    }
+
+    .font-black #scrubber,
+    .font-black #scrubber span {
+      color: rgba(0, 0, 0, 0.6) !important;
+    }
+
+    .font-black #drawerScreen button {
+      color: #000000 !important;
+    }
+
+    .font-black #drawerScreen svg {
+      fill: #000000 !important;
+      stroke: #000000 !important;
+    }
+
+    .font-black #drawerScreen .border-t {
+      border-color: rgba(0, 0, 0, 0.18) !important;
+    }
+
+    .font-black .h-4 div {
+      background-color: rgba(0, 0, 0, 0.5) !important;
+    }
+
     /* ================= CLEAR GLASS TEXT APPS (MINIMALIST, ZERO CARDS, RAZOR-SHARP) ================= */
     .water-drop-app-text {
       position: relative;
@@ -499,6 +615,28 @@
           </div>
         </div>
 
+        <!-- Font Color Selection (White / Black) -->
+        <div>
+          <div class="text-[11px] font-medium tracking-wider text-white/40 lowercase mb-2.5">font color</div>
+          <div class="space-y-2">
+            <div onclick="setFontColor('white')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
+              <div>
+                <div class="font-medium lowercase text-[13px]">white</div>
+                <div class="text-[10px] text-white/50 lowercase">all text, numerals, and icons in white</div>
+              </div>
+              <span id="checkFontWhite" class="text-white font-medium text-sm">✓</span>
+            </div>
+
+            <div onclick="setFontColor('black')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
+              <div>
+                <div class="font-medium lowercase text-[13px]">black</div>
+                <div class="text-[10px] text-white/50 lowercase">all text, numerals, and icons in black</div>
+              </div>
+              <span id="checkFontBlack" class="text-white font-medium text-sm hidden">✓</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Quick Pay Scanner App Selection -->
         <div>
           <div class="text-[11px] font-medium tracking-wider text-white/40 lowercase mb-2.5">payment scanner</div>
@@ -698,6 +836,12 @@
         phone.classList.remove('theme-light');
         if (statusBar) statusBar.className = 'h-8 px-7 flex items-center justify-between text-[11px] text-white/95 font-semibold z-30 pointer-events-none pt-1 drop-shadow-sm';
         dateHeader.className = 'flex items-center justify-center text-[12.5px] font-semibold text-white/95 tracking-[0.28em] uppercase drop-shadow-sm';
+      }
+
+      if (currentFontColor === 'black') {
+        phone.classList.add('font-black');
+      } else if (currentFontColor === 'white') {
+        phone.classList.remove('font-black');
       }
 
       renderFavorites();
@@ -931,6 +1075,30 @@
       document.getElementById('clearSearchBtn').classList.add('hidden');
     }
 
+    let currentFontColor = 'white';
+
+    function setFontColor(color) {
+      currentFontColor = color;
+      const phone = document.getElementById('phoneContainer');
+
+      if (color === 'black') {
+        phone.classList.add('font-black');
+        phone.classList.remove('font-white');
+      } else {
+        phone.classList.remove('font-black');
+        phone.classList.add('font-white');
+      }
+
+      const checkWhite = document.getElementById('checkFontWhite');
+      const checkBlack = document.getElementById('checkFontBlack');
+      if (checkWhite) checkWhite.classList.toggle('hidden', color !== 'white');
+      if (checkBlack) checkBlack.classList.toggle('hidden', color !== 'black');
+
+      renderFavorites();
+      renderAllApps();
+      showToast(`font color: ${color}`);
+    }
+
     let selectedPaymentApp = 'gpay';
     let selectedPaymentAppName = 'google pay';
 
@@ -1028,7 +1196,6 @@
       if (newName && newName.trim()) {
         selectedApp.name = newName.trim();
         renderFavorites();
-    renderAllApps();
         renderAllApps(document.getElementById('searchInput').value);
       }
       closeContextMenu();

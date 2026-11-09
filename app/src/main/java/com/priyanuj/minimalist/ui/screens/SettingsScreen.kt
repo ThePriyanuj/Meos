@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.priyanuj.minimalist.data.AppTheme
+import com.priyanuj.minimalist.data.FontColor
 import com.priyanuj.minimalist.data.FontStyle
 import com.priyanuj.minimalist.data.TextTransform
 
@@ -36,6 +37,8 @@ import com.priyanuj.minimalist.data.TextTransform
 fun SettingsScreen(
     currentTheme: AppTheme,
     onThemeSelect: (AppTheme) -> Unit,
+    fontColor: FontColor = FontColor.WHITE,
+    onFontColorSelect: (FontColor) -> Unit = {},
     fontStyle: FontStyle = FontStyle.SANS_SERIF,
     onFontSelect: (FontStyle) -> Unit = {},
     textTransform: TextTransform = TextTransform.LOWERCASE,
@@ -103,6 +106,33 @@ fun SettingsScreen(
                 title = "paper white",
                 isSelected = currentTheme == AppTheme.PAPER_WHITE,
                 onClick = { onThemeSelect(AppTheme.PAPER_WHITE) }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "font color",
+                style = MaterialTheme.typography.labelSmall.copy(
+                    color = MaterialTheme.colorScheme.secondary,
+                    fontSize = 11.sp,
+                    letterSpacing = 1.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OptionRow(
+                title = "white",
+                isSelected = fontColor == FontColor.WHITE,
+                onClick = { onFontColorSelect(FontColor.WHITE) }
+            )
+
+            OptionRow(
+                title = "black",
+                isSelected = fontColor == FontColor.BLACK,
+                onClick = { onFontColorSelect(FontColor.BLACK) }
             )
 
             Spacer(modifier = Modifier.height(16.dp))

@@ -45,6 +45,12 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
         initialValue = "com.google.android.apps.nbu.paisa.user"
     )
 
+    val fontColor: StateFlow<com.priyanuj.minimalist.data.FontColor> = preferences.fontColorFlow.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = com.priyanuj.minimalist.data.FontColor.WHITE
+    )
+
     private val allApps: StateFlow<List<AppModel>> = repository.observeApps().stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -140,6 +146,12 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
     fun setPaymentApp(packageName: String) {
         viewModelScope.launch {
             preferences.setPaymentApp(packageName)
+        }
+    }
+
+    fun setFontColor(color: com.priyanuj.minimalist.data.FontColor) {
+        viewModelScope.launch {
+            preferences.setFontColor(color)
         }
     }
 }

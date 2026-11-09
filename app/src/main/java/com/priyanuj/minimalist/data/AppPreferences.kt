@@ -41,6 +41,11 @@ enum class IconStyle {
     MONOCHROME_OUTLINE
 }
 
+enum class FontColor {
+    WHITE,
+    BLACK
+}
+
 class AppPreferences(private val context: Context) {
 
     companion object {
@@ -58,6 +63,12 @@ class AppPreferences(private val context: Context) {
         private val KEY_SWIPE_LEFT_PKG = stringPreferencesKey("swipe_left_package")
         private val KEY_MAX_FAVORITES = intPreferencesKey("max_favorites_count")
         private val KEY_PAYMENT_APP = stringPreferencesKey("default_payment_app")
+        private val KEY_FONT_COLOR = stringPreferencesKey("font_color")
+    }
+
+    val fontColorFlow: Flow<FontColor> = context.dataStore.data.map { preferences ->
+        val raw = preferences[KEY_FONT_COLOR] ?: FontColor.WHITE.name
+        try { FontColor.valueOf(raw) } catch (_: Exception) { FontColor.WHITE }
     }
 
     val favoritesFlow: Flow<Set<String>> = context.dataStore.data.map { preferences ->
@@ -233,5 +244,9 @@ class AppPreferences(private val context: Context) {
 
     suspend fun setPaymentApp(packageName: String) {
         context.dataStore.edit { prefs -> prefs[KEY_PAYMENT_APP] = packageName }
+    }
+
+    suspend fun setFontColor(color: FontColor) {
+        context.dataStore.edit { prefs -> prefs[KEY_FONT_COLOR] = color.name }
     }
 }

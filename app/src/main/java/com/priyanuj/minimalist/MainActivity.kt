@@ -41,6 +41,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val theme by viewModel.themeState.collectAsState()
+            val fontColor by viewModel.fontColor.collectAsState()
             val paymentApp by viewModel.paymentApp.collectAsState()
             val currentScreen by viewModel.currentScreen.collectAsState()
             val favoriteApps by viewModel.favoriteApps.collectAsState()
@@ -99,7 +100,8 @@ class MainActivity : ComponentActivity() {
                                         onCalendarClick = { viewModel.repository.openCalendar() },
                                         onOpenDrawer = { viewModel.currentScreen.value = Screen.DRAWER },
                                         onUpiScanClick = { viewModel.repository.openPaymentScanner(paymentApp) },
-                                        onQuickDial = { viewModel.repository.openDialer() }
+                                        onQuickDial = { viewModel.repository.openDialer() },
+                                        fontColor = fontColor
                                     )
                                 } else {
                                     HomeScreen(
@@ -132,6 +134,8 @@ class MainActivity : ComponentActivity() {
                             Screen.SETTINGS -> SettingsScreen(
                                 currentTheme = theme,
                                 onThemeSelect = { viewModel.setTheme(it) },
+                                fontColor = fontColor,
+                                onFontColorSelect = { viewModel.setFontColor(it) },
                                 selectedPaymentApp = paymentApp,
                                 onPaymentAppSelect = { viewModel.setPaymentApp(it) },
                                 onOpenHiddenApps = { viewModel.currentScreen.value = Screen.HIDDEN_APPS },
