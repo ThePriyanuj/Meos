@@ -325,28 +325,28 @@ fun ClearGlassNumeral(text: String) {
 }
 
 /**
- * Water Drop Spherical Colon (Zero boundary, Sharp Caustics).
+ * Water Drop Spherical Colon (Zero boundary, Sharp Caustics - Matched with Text Color).
  */
 @Composable
 fun GlassColonSphere() {
     Canvas(modifier = Modifier.size(12.dp)) {
-        // Sharp water drop lens shadow
+        // Drop shadow matching ClearGlassNumeral text shadow
         drawCircle(
-            color = Color(0x66001026),
+            color = Color(0x99001026),
             radius = size.minDimension / 2f,
-            center = Offset(center.x, center.y + 1f)
+            center = Offset(center.x, center.y + 1.5f)
         )
-        // Water Drop lens with radial caustic light refraction
+        // Water Drop lens with vertical gradient exactly matching ClearGlassNumeral text brush
         drawCircle(
-            brush = Brush.radialGradient(
+            brush = Brush.verticalGradient(
                 colors = listOf(
-                    Color(0xCCFFFFFF),
-                    Color(0x33FFFFFF),
-                    Color(0x26001026)
-                ),
-                center = Offset(size.width * 0.35f, size.height * 0.35f),
-                radius = size.minDimension * 0.55f
-            )
+                    Color.White.copy(alpha = 0.65f), // Top specular liquid meniscus crest (matches numeral text)
+                    Color.White.copy(alpha = 0.12f), // Crystal clear liquid water interior
+                    Color(0x33001026)                // Bottom refractive optical shadow
+                )
+            ),
+            radius = size.minDimension / 2f,
+            center = center
         )
     }
 }
