@@ -130,7 +130,9 @@ class MainActivity : ComponentActivity() {
                                     viewModel.searchQuery.value = ""
                                     viewModel.currentScreen.value = Screen.HOME
                                 },
-                                onOpenSettings = { viewModel.currentScreen.value = Screen.SETTINGS }
+                                onOpenSettings = { viewModel.currentScreen.value = Screen.SETTINGS },
+                                atmosphere = atmosphere,
+                                fontColor = fontColor
                             )
 
                             Screen.SETTINGS -> SettingsScreen(

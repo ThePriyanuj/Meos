@@ -2,6 +2,7 @@ package com.priyanuj.minimalist.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -39,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
@@ -62,8 +64,13 @@ fun AppDrawerScreen(
     onAppLongClick: (AppModel) -> Unit,
     onBack: () -> Unit,
     onOpenSettings: () -> Unit = {},
+    atmosphere: com.priyanuj.minimalist.data.Atmosphere = com.priyanuj.minimalist.data.Atmosphere.ALPINE,
+    fontColor: com.priyanuj.minimalist.data.FontColor = com.priyanuj.minimalist.data.FontColor.WHITE,
     modifier: Modifier = Modifier
 ) {
+    val isLight = atmosphere.isLight
+    val isFontBlack = (fontColor == com.priyanuj.minimalist.data.FontColor.BLACK) || (isLight && fontColor != com.priyanuj.minimalist.data.FontColor.WHITE)
+
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -110,6 +117,7 @@ fun AppDrawerScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(getAtmosphereBrush(atmosphere))
             .nestedScroll(nestedScrollConnection)
             .pointerInput(Unit) {
                 detectDragGestures(
@@ -129,10 +137,27 @@ fun AppDrawerScreen(
             .padding(horizontal = 24.dp)
             .padding(top = 42.dp, bottom = 16.dp)
     ) {
-        // Unified Liquid Glass Search Banner (Identical shape and optical caustics to Home Dock)
+        // Unified Liquid Glass Search Banner with Light Tint of Blue
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = if (isLight) listOf(
+                            Color(0x55BAE6FD), // Light ice-blue tint for light theme
+                            Color(0x35E0F2FE)
+                        ) else listOf(
+                            Color(0x2838BDF8), // Radiant light blue liquid tint
+                            Color(0x140284C7)
+                        )
+                    ),
+                    shape = RoundedCornerShape(26.dp)
+                )
+                .border(
+                    width = 1.dp,
+                    color = if (isLight) Color(0x6638BDF8) else Color(0x5038BDF8),
+                    shape = RoundedCornerShape(26.dp)
+                )
                 .liquidDropletGlass(26.dp)
                 .padding(horizontal = 14.dp, vertical = 6.dp)
         ) {
@@ -147,7 +172,7 @@ fun AppDrawerScreen(
                     Icon(
                         imageVector = Icons.Outlined.Search,
                         contentDescription = "Search",
-                        tint = Color.White.copy(alpha = 0.85f),
+                        tint = if (isLight) Color(0xFF0284C7) else Color(0xFF38BDF8), // Light blue search icon
                         modifier = Modifier.size(18.dp)
                     )
                 }
@@ -160,14 +185,14 @@ fun AppDrawerScreen(
                         .padding(horizontal = 6.dp),
                     singleLine = true,
                     textStyle = androidx.compose.ui.text.TextStyle(
-                        color = Color.White,
+                        color = if (isFontBlack) Color(0xFF0F172A) else Color.White,
                         fontSize = 14.sp
                     ),
                     decorationBox = { innerTextField ->
                         if (searchQuery.isEmpty()) {
                             Text(
                                 text = "search apps...",
-                                color = Color.White.copy(alpha = 0.45f),
+                                color = if (isLight) Color(0x990E7490) else Color(0x99BAE6FD),
                                 fontSize = 14.sp
                             )
                         }
@@ -215,7 +240,8 @@ fun AppDrawerScreen(
                     AppTextItem(
                         app = app,
                         onClick = { onAppClick(app) },
-                        onLongClick = { onAppLongClick(app) }
+                        onLongClick = { onAppLongClick(app) },
+                        isBlack = isFontBlack
                     )
                 }
             }

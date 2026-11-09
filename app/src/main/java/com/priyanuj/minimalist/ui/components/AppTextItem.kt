@@ -31,7 +31,8 @@ fun AppTextItem(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isHomeFavorite: Boolean = false
+    isHomeFavorite: Boolean = false,
+    isBlack: Boolean = false
 ) {
     Row(
         modifier = modifier
@@ -51,20 +52,25 @@ fun AppTextItem(
             fontSize = 21.sp,
             fontWeight = FontWeight.Normal,
             letterSpacing = 2.8.sp,
-            style = androidx.compose.ui.text.TextStyle(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.White.copy(alpha = 0.55f),
-                        Color.White.copy(alpha = 0.14f),
-                        Color(0x26001026)
+            color = if (isBlack) Color.Black else Color.Unspecified,
+            style = if (isBlack) {
+                androidx.compose.ui.text.TextStyle()
+            } else {
+                androidx.compose.ui.text.TextStyle(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.White.copy(alpha = 0.55f),
+                            Color.White.copy(alpha = 0.14f),
+                            Color(0x26001026)
+                        )
+                    ),
+                    shadow = Shadow(
+                        color = Color(0xCC001026),
+                        offset = Offset(0f, 1.2f),
+                        blurRadius = 1.5f
                     )
-                ),
-                shadow = Shadow(
-                    color = Color(0xCC001026),
-                    offset = Offset(0f, 1.2f),
-                    blurRadius = 1.5f
                 )
-            ),
+            },
             maxLines = 1
         )
     }

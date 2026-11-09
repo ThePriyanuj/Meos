@@ -258,22 +258,62 @@ html_content = f'''<!DOCTYPE html>
       filter: none !important;
     }}
 
-    /* Light Theme All Apps Drawer */
+    /* Light Theme All Apps Drawer (Zero Separation - Perfectly Seamless with Wallpaper) */
     .theme-light #drawerScreen {{
-      background: rgba(235, 232, 222, 0.72) !important;
-      color: #1a1a1a !important;
+      background: transparent !important;
+      color: #0f172a !important;
     }}
     .theme-light #drawerScreen input {{
-      color: #1a1a1a !important;
+      color: #0f172a !important;
     }}
     .theme-light #drawerScreen input::placeholder {{
-      color: rgba(20, 25, 35, 0.45) !important;
+      color: rgba(14, 116, 144, 0.65) !important;
     }}
     .theme-light #scrubber span {{
-      color: rgba(20, 25, 35, 0.55);
+      color: rgba(15, 23, 42, 0.55);
     }}
     .theme-light #totalAppsCounter {{
-      color: rgba(20, 25, 35, 0.5) !important;
+      color: rgba(15, 23, 42, 0.5) !important;
+    }}
+
+    /* Search Bar: Radiant Light Tint of Blue (Zero Boundary Liquid Optics) */
+    #unifiedBanner.search-active,
+    .drawer-open #unifiedBanner {{
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.16) 0%, rgba(14, 165, 233, 0.08) 100%) !important;
+      border: 1px solid rgba(56, 189, 248, 0.32) !important;
+      box-shadow: 
+        inset 0 1px 1.5px rgba(255, 255, 255, 0.45),
+        inset 0 -1px 1px rgba(14, 165, 233, 0.25),
+        0 10px 28px -4px rgba(2, 132, 199, 0.25) !important;
+    }}
+
+    .theme-light #unifiedBanner.search-active,
+    .theme-light.drawer-open #unifiedBanner {{
+      background: linear-gradient(135deg, rgba(186, 230, 253, 0.55) 0%, rgba(224, 242, 254, 0.40) 100%) !important;
+      border: 1px solid rgba(56, 189, 248, 0.42) !important;
+      box-shadow: 
+        inset 0 1px 1.5px rgba(255, 255, 255, 0.8),
+        inset 0 -1px 1px rgba(14, 165, 233, 0.15),
+        0 8px 24px -4px rgba(14, 165, 233, 0.18) !important;
+    }}
+
+    /* Search Icon & Placeholder Light Blue Tint */
+    #bannerSearchIcon svg {{
+      color: #38bdf8 !important;
+      fill: #38bdf8 !important;
+    }}
+    .theme-light #bannerSearchIcon svg {{
+      color: #0284c7 !important;
+      fill: #0284c7 !important;
+    }}
+    #bannerSearchBox input {{
+      caret-color: #38bdf8;
+    }}
+    #bannerSearchBox input::placeholder {{
+      color: rgba(186, 230, 253, 0.7) !important;
+    }}
+    .theme-light #bannerSearchBox input::placeholder {{
+      color: rgba(14, 116, 144, 0.65) !important;
     }}
 
     /* ================= DYNAMIC FONT COLOR: BLACK OVERRIDE ================= */
@@ -601,7 +641,7 @@ html_content = f'''<!DOCTYPE html>
     </div>
 
     <!-- ================= UNIFIED PERSISTENT LIQUID BANNER (TRUE ONE-MOVEMENT GPU MORPH) ================= -->
-    <div id="unifiedBanner" class="water-dock absolute left-5 right-5 bottom-4 h-12 z-30 flex items-center justify-between px-3 transition-transform duration-[380ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
+    <div id="unifiedBanner" class="water-dock absolute left-5 right-5 bottom-4 h-12 z-30 flex items-center justify-between px-3 transition-all duration-[380ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
       
       <!-- Left Action Slot (Phone on Home <-> Search Glass on Drawer) -->
       <div class="relative w-8 h-8 flex items-center justify-center flex-shrink-0">
@@ -1200,6 +1240,8 @@ html_content = f'''<!DOCTYPE html>
       const travelDistance = currentTop - targetTop;
 
       // 1. Unified Banner ascends in one continuous physics movement
+      banner.classList.add('search-active');
+      document.getElementById('phoneContainer').classList.add('drawer-open');
       banner.style.transform = `translate3d(0, -${{travelDistance}}px, 0)`;
 
       // 2. Interior Icon Morph (Phone -> Search, Glass -> Input, UPI -> Settings)
@@ -1240,6 +1282,8 @@ html_content = f'''<!DOCTYPE html>
       const drawerScreen = document.getElementById('drawerScreen');
 
       // 1. Unified Banner descends back down in one continuous physics movement
+      banner.classList.remove('search-active');
+      document.getElementById('phoneContainer').classList.remove('drawer-open');
       banner.style.transform = 'translate3d(0, 0, 0)';
 
       // 2. Interior Icon Morph Reversal (Search -> Phone, Input -> Glass, Settings -> UPI)
