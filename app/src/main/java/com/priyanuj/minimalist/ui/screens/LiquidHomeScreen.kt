@@ -1,6 +1,7 @@
 package com.priyanuj.minimalist.ui.screens
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -251,10 +252,34 @@ fun LiquidHomeScreen(
                 }
             }
 
-            // 3. Bottom Clear Glass Banner: Sharp Edge Caustics, No White Border
+            // 3. Bottom Clear Glass Banner: Sharp Edge Caustics (Light blue tint on mostly white atmospheres)
+            val isLightAtmo = atmosphere.isLight
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(
+                        brush = if (isLightAtmo) {
+                            Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0x55BAE6FD), // Light ice-blue tint for light/white atmospheres
+                                    Color(0x35E0F2FE)
+                                )
+                            )
+                        } else {
+                            Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0x0AFFFFFF),
+                                    Color(0x05FFFFFF)
+                                )
+                            )
+                        },
+                        shape = RoundedCornerShape(26.dp)
+                    )
+                    .border(
+                        width = 1.dp,
+                        color = if (isLightAtmo) Color(0x6638BDF8) else Color(0x25FFFFFF),
+                        shape = RoundedCornerShape(26.dp)
+                    )
                     .liquidDropletGlass(26.dp)
                     .padding(horizontal = 20.dp, vertical = 6.dp)
             ) {
@@ -271,7 +296,7 @@ fun LiquidHomeScreen(
                         Icon(
                             imageVector = Icons.Outlined.Call,
                             contentDescription = "Phone",
-                            tint = if (isBlack) Color.Black else Color.White.copy(alpha = 0.95f),
+                            tint = if (isBlack) Color.Black else if (isLightAtmo) Color(0xFF0284C7) else Color.White.copy(alpha = 0.95f),
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -284,7 +309,7 @@ fun LiquidHomeScreen(
                         Icon(
                             imageVector = Icons.Outlined.QrCodeScanner,
                             contentDescription = "Scan to Pay (UPI)",
-                            tint = if (isBlack) Color.Black else Color.White.copy(alpha = 0.95f),
+                            tint = if (isBlack) Color.Black else if (isLightAtmo) Color(0xFF0284C7) else Color.White.copy(alpha = 0.95f),
                             modifier = Modifier.size(18.dp)
                         )
                     }

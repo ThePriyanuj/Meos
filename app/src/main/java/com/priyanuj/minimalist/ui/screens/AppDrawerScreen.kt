@@ -137,25 +137,31 @@ fun AppDrawerScreen(
             .padding(horizontal = 24.dp)
             .padding(top = 42.dp, bottom = 16.dp)
     ) {
-        // Unified Liquid Glass Search Banner with Light Tint of Blue
+        // Unified Liquid Glass Search Banner (Light blue tint on mostly white atmospheres, original clear on others)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    brush = Brush.horizontalGradient(
-                        colors = if (isLight) listOf(
-                            Color(0x55BAE6FD), // Light ice-blue tint for light theme
-                            Color(0x35E0F2FE)
-                        ) else listOf(
-                            Color(0x2838BDF8), // Radiant light blue liquid tint
-                            Color(0x140284C7)
+                    brush = if (isLight) {
+                        Brush.horizontalGradient(
+                            colors = listOf(
+                                Color(0x55BAE6FD), // Light ice-blue tint for light/white atmospheres
+                                Color(0x35E0F2FE)
+                            )
                         )
-                    ),
+                    } else {
+                        Brush.horizontalGradient(
+                            colors = listOf(
+                                Color(0x0AFFFFFF),
+                                Color(0x05FFFFFF)
+                            )
+                        )
+                    },
                     shape = RoundedCornerShape(26.dp)
                 )
                 .border(
                     width = 1.dp,
-                    color = if (isLight) Color(0x6638BDF8) else Color(0x5038BDF8),
+                    color = if (isLight) Color(0x6638BDF8) else Color(0x25FFFFFF),
                     shape = RoundedCornerShape(26.dp)
                 )
                 .liquidDropletGlass(26.dp)
@@ -172,7 +178,7 @@ fun AppDrawerScreen(
                     Icon(
                         imageVector = Icons.Outlined.Search,
                         contentDescription = "Search",
-                        tint = if (isLight) Color(0xFF0284C7) else Color(0xFF38BDF8), // Light blue search icon
+                        tint = if (isLight) Color(0xFF0284C7) else Color.White.copy(alpha = 0.85f),
                         modifier = Modifier.size(18.dp)
                     )
                 }
@@ -192,7 +198,7 @@ fun AppDrawerScreen(
                         if (searchQuery.isEmpty()) {
                             Text(
                                 text = "search apps...",
-                                color = if (isLight) Color(0x990E7490) else Color(0x99BAE6FD),
+                                color = if (isLight) Color(0x990E7490) else Color.White.copy(alpha = 0.45f),
                                 fontSize = 14.sp
                             )
                         }
@@ -208,7 +214,7 @@ fun AppDrawerScreen(
                         Icon(
                             imageVector = Icons.Outlined.Clear,
                             contentDescription = "Clear",
-                            tint = Color.White.copy(alpha = 0.75f),
+                            tint = if (isLight) Color(0xFF0284C7) else Color.White.copy(alpha = 0.75f),
                             modifier = Modifier.size(16.dp)
                         )
                     }
@@ -220,7 +226,7 @@ fun AppDrawerScreen(
                         Icon(
                             imageVector = Icons.Outlined.Settings,
                             contentDescription = "Settings",
-                            tint = Color.White.copy(alpha = 0.85f),
+                            tint = if (isLight) Color(0xFF0284C7) else Color.White.copy(alpha = 0.85f),
                             modifier = Modifier.size(18.dp)
                         )
                     }

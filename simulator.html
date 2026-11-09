@@ -263,20 +263,10 @@
       color: rgba(15, 23, 42, 0.5) !important;
     }
 
-    /* Search Bar: Radiant Light Tint of Blue (Zero Boundary Liquid Optics) */
-    #unifiedBanner.search-active,
-    .drawer-open #unifiedBanner {
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.16) 0%, rgba(14, 165, 233, 0.08) 100%) !important;
-      border: 1px solid rgba(56, 189, 248, 0.32) !important;
-      box-shadow: 
-        inset 0 1px 1.5px rgba(255, 255, 255, 0.45),
-        inset 0 -1px 1px rgba(14, 165, 233, 0.25),
-        0 10px 28px -4px rgba(2, 132, 199, 0.25) !important;
-    }
-
-    .theme-light #unifiedBanner.search-active,
-    .theme-light.drawer-open #unifiedBanner {
-      background: linear-gradient(135deg, rgba(186, 230, 253, 0.55) 0%, rgba(224, 242, 254, 0.40) 100%) !important;
+    /* Light Theme (Wallpapers with Mostly White: Alabaster White & Pinstripe):
+       Light Blue Tint on BOTH the 'Call & Scan' Home Banner and the Search Banner */
+    .theme-light #unifiedBanner {
+      background: linear-gradient(135deg, rgba(186, 230, 253, 0.55) 0%, rgba(224, 242, 254, 0.38) 100%) !important;
       border: 1px solid rgba(56, 189, 248, 0.42) !important;
       box-shadow: 
         inset 0 1px 1.5px rgba(255, 255, 255, 0.8),
@@ -284,21 +274,31 @@
         0 8px 24px -4px rgba(14, 165, 233, 0.18) !important;
     }
 
-    /* Search Icon & Placeholder Light Blue Tint */
-    #bannerSearchIcon svg {
-      color: #38bdf8 !important;
-      fill: #38bdf8 !important;
+    .theme-light #bannerPhoneBtn svg,
+    .theme-light #bannerUpiBtn svg {
+      color: #0284c7 !important;
+      stroke: #0284c7 !important;
     }
+
     .theme-light #bannerSearchIcon svg {
       color: #0284c7 !important;
       fill: #0284c7 !important;
     }
-    #bannerSearchBox input {
-      caret-color: #38bdf8;
+
+    .theme-light #bannerSettingsBtn svg {
+      color: #0284c7 !important;
+      fill: #0284c7 !important;
     }
-    #bannerSearchBox input::placeholder {
-      color: rgba(186, 230, 253, 0.7) !important;
+
+    .theme-light #bannerHomeTap div {
+      background-color: rgba(2, 132, 199, 0.45) !important;
     }
+
+    .theme-light #bannerSearchBox input {
+      color: #0f172a !important;
+      caret-color: #0284c7;
+    }
+
     .theme-light #bannerSearchBox input::placeholder {
       color: rgba(14, 116, 144, 0.65) !important;
     }
