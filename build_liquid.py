@@ -1035,19 +1035,19 @@ html_content = f'''<!DOCTYPE html>
 
         <!-- Options -->
         <div class="flex-1 overflow-y-auto hide-scrollbar pt-2 space-y-0.5">
-          <!-- Swipe left to open search -->
-          <div onclick="toggleSetting('swipeSearch')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
-            <span class="text-[13.5px] font-normal lowercase">swipe left to open search</span>
-            <div id="toggleSwipeSearch" class="settings-toggle-bg active w-8 h-4.5 rounded-full p-0.5 flex items-center transition-colors">
-              <div id="knobSwipeSearch" class="settings-toggle-knob w-3.5 h-3.5 rounded-full shadow-sm translate-x-3.5 transition-transform"></div>
+          <!-- Swipe left to open web browser -->
+          <div onclick="toggleSetting('swipeBrowser')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] font-normal lowercase">swipe left to open web browser</span>
+            <div id="toggleSwipeBrowser" class="settings-toggle-bg active w-8 h-4.5 rounded-full p-0.5 flex items-center transition-colors">
+              <div id="knobSwipeBrowser" class="settings-toggle-knob w-3.5 h-3.5 rounded-full shadow-sm translate-x-3.5 transition-transform"></div>
             </div>
           </div>
 
-          <!-- Swipe right to open web browser -->
-          <div onclick="toggleSetting('swipeBrowser')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
-            <span class="text-[13.5px] font-normal lowercase">swipe right to open web browser</span>
-            <div id="toggleSwipeBrowser" class="settings-toggle-bg active w-8 h-4.5 rounded-full p-0.5 flex items-center transition-colors">
-              <div id="knobSwipeBrowser" class="settings-toggle-knob w-3.5 h-3.5 rounded-full shadow-sm translate-x-3.5 transition-transform"></div>
+          <!-- Swipe right to open to do list -->
+          <div onclick="toggleSetting('swipeTodo')" class="settings-row flex items-center justify-between py-3 px-2 rounded-xl cursor-pointer transition-colors">
+            <span class="text-[13.5px] font-normal lowercase">swipe right to open to do list</span>
+            <div id="toggleSwipeTodo" class="settings-toggle-bg active w-8 h-4.5 rounded-full p-0.5 flex items-center transition-colors">
+              <div id="knobSwipeTodo" class="settings-toggle-knob w-3.5 h-3.5 rounded-full shadow-sm translate-x-3.5 transition-transform"></div>
             </div>
           </div>
 
@@ -1871,8 +1871,8 @@ html_content = f'''<!DOCTYPE html>
       clockApp: 'clock',
       autoKeyboard: true,
       matchLockScreen: true,
-      swipeSearch: true,
       swipeBrowser: true,
+      swipeTodo: true,
       doubleTapLock: true
     }};
 
@@ -1905,8 +1905,8 @@ html_content = f'''<!DOCTYPE html>
       const titles = {{
         autoKeyboard: 'automatically open keyboard',
         matchLockScreen: 'matching lock screen background',
-        swipeSearch: 'swipe left to open search',
-        swipeBrowser: 'swipe right to open web browser',
+        swipeBrowser: 'swipe left to open web browser',
+        swipeTodo: 'swipe right to open to do list',
         doubleTapLock: 'double-tap to lock'
       }};
       showToast(`${{titles[key] || key}}: ${{val ? 'enabled' : 'disabled'}}`);
@@ -2182,15 +2182,6 @@ html_content = f'''<!DOCTYPE html>
       }}
     }}
 
-    function openWebBrowser() {{
-      if (window.Android && window.Android.openBrowser) {{
-        window.Android.openBrowser();
-      }} else {{
-        window.open('https://www.google.com', '_blank');
-        showToast('opening web browser...');
-      }}
-    }}
-
     let currentFontColor = 'white';
 
     function setFontColor(color) {{
@@ -2390,6 +2381,17 @@ html_content = f'''<!DOCTYPE html>
       lastTapTime = currentTime;
     }}
 
+    function openWebBrowser() {{
+      if (window.Android && window.Android.openBrowser) {{
+        window.Android.openBrowser();
+      }} else {{
+        try {{
+          window.open('https://www.google.com', '_blank');
+        }} catch(e) {{}}
+        showToast('opening web browser...');
+      }}
+    }}
+
     let gestureStartX = 0;
     let gestureStartY = 0;
     let gestureStartScrollTop = 0;
@@ -2476,21 +2478,14 @@ html_content = f'''<!DOCTYPE html>
         }} else {{
           // Horizontal dominant
           if (dragX <= -THRESHOLD) {{
-            // 2. LEFT SWIPE -> Open Search (if enabled)
-            if (settingsState.swipeSearch) {{
-              openDrawer();
-              setTimeout(() => {{
-                const input = document.getElementById('searchInput');
-                if (input) {{
-                  input.focus();
-                  input.select();
-                }}
-              }}, 60);
-            }}
-          }} else if (dragX >= THRESHOLD) {{
-            // 3. RIGHT SWIPE -> Open Web Browser (if enabled)
+            // 2. LEFT SWIPE -> Open Web Browser (if enabled)
             if (settingsState.swipeBrowser) {{
               openWebBrowser();
+            }}
+          }} else if (dragX >= THRESHOLD) {{
+            // 3. RIGHT SWIPE -> Open To Do List (if enabled)
+            if (settingsState.swipeTodo) {{
+              openTodoScreen();
             }}
           }}
         }}
@@ -2567,16 +2562,12 @@ html_content = f'''<!DOCTYPE html>
           // Scroll up / wheel down on home screen -> Open Drawer
           openDrawer();
         }} else if (absX > absY) {{
-          if (e.deltaX > 25 && settingsState.swipeSearch) {{
-            // Swiped left -> Open Search
-            openDrawer();
-            setTimeout(() => {{
-              const input = document.getElementById('searchInput');
-              if (input) {{ input.focus(); input.select(); }}
-            }}, 60);
-          }} else if (e.deltaX < -25 && settingsState.swipeBrowser) {{
-            // Swiped right -> Open Web Browser
+          if (e.deltaX > 25 && settingsState.swipeBrowser) {{
+            // Swiped left -> Open Web Browser
             openWebBrowser();
+          }} else if (e.deltaX < -25 && settingsState.swipeTodo) {{
+            // Swiped right -> Open To Do List
+            openTodoScreen();
           }}
         }}
       }} else if (isDrawerOpen) {{
