@@ -237,54 +237,6 @@ fun AppDrawerScreen(
                 )
             }
         }
-
-        // Drawer Footer: Home button on left, Settings symbol relocated here from home screen
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(
-                modifier = Modifier
-                    .clickable { onBack() }
-                    .padding(vertical = 4.dp, horizontal = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "‹",
-                    fontSize = 16.sp,
-                    color = Color.White.copy(alpha = 0.7f)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = "home",
-                    fontSize = 13.sp,
-                    color = Color.White.copy(alpha = 0.85f)
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .clickable { onOpenSettings() }
-                    .padding(vertical = 4.dp, horizontal = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Settings,
-                    contentDescription = "Settings",
-                    tint = Color.White.copy(alpha = 0.85f),
-                    modifier = Modifier.size(16.dp)
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = "settings",
-                    fontSize = 13.sp,
-                    color = Color.White.copy(alpha = 0.85f)
-                )
-            }
-        }
     }
 }
 

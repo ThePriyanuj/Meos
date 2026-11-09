@@ -515,7 +515,7 @@ html_content = f'''<!DOCTYPE html>
     </div>
 
     <!-- ================= ALL APPS SCREEN ================= -->
-    <div id="drawerScreen" class="absolute inset-x-0 top-[96px] bottom-3 px-6 flex flex-col z-20 opacity-0 pointer-events-none translate-y-16 transition-all duration-[380ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
+    <div id="drawerScreen" class="absolute inset-x-0 top-[96px] bottom-20 px-6 flex flex-col z-20 opacity-0 pointer-events-none translate-y-16 transition-all duration-[380ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
       <!-- Apps List and Alphabet Scrubber -->
       <div class="flex-1 relative flex overflow-hidden">
         <div class="flex-1 overflow-y-auto hide-scrollbar py-2 space-y-2 pr-2" id="allAppsList">
@@ -523,18 +523,6 @@ html_content = f'''<!DOCTYPE html>
         </div>
         <!-- A-Z Alphabet Scrubber -->
         <div class="w-5 flex flex-col items-center justify-between py-1 text-[8px] text-white/50 font-semibold select-none" id="scrubber"></div>
-      </div>
-
-      <!-- Drawer Footer (Settings symbol moved here from home screen) -->
-      <div class="pt-3 border-t border-white/10 flex justify-between items-center text-xs text-white/70">
-        <button onclick="goHome()" class="hover:text-white active:scale-95 transition-all flex items-center space-x-1 py-1 px-2.5 rounded-full hover:bg-white/10">
-          <span>‹</span>
-          <span>home</span>
-        </button>
-        <button onclick="openSettings()" class="hover:text-white active:scale-95 transition-all flex items-center space-x-1.5 py-1 px-2.5 rounded-full bg-white/10 hover:bg-white/20" title="Launcher Settings">
-          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-          <span class="text-[12px] lowercase tracking-wide font-medium">settings</span>
-        </button>
       </div>
     </div>
 
