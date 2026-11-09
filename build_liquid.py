@@ -154,28 +154,26 @@ html_content = f'''<!DOCTYPE html>
       transform: scaleY(1.39) scaleX(1.24);
     }}
 
-    /* Pure Water Droplet Colon (Zero boundary, Sharp Caustics - Exactly Matched to Text Color) */
+    /* Pure Water Droplet Colon (Solid White in White mode, Solid Black in Black mode) */
     .water-drop-colon-dot {{
-      width: 12px;
-      height: 12px;
+      width: 11px;
+      height: 11px;
       border-radius: 50%;
-      background-image: 
-        linear-gradient(172deg, rgba(255, 255, 255, 0.70) 0%, rgba(255, 255, 255, 0.12) 28%, rgba(0, 12, 28, 0.04) 65%, rgba(0, 12, 28, 0.55) 100%),
-        var(--active-wp);
-      background-size: 100% 100%, 150% 150%;
-      background-position: center;
-      background-blend-mode: overlay, normal;
+      background: #ffffff !important;
+      background-image: none !important;
       border: none !important;
       outline: none !important;
-      box-shadow: 
-        0 -1px 0.5px rgba(255, 255, 255, 0.98),
-        0 1px 0.5px rgba(255, 255, 255, 0.75),
-        0 2px 2.5px rgba(0, 10, 25, 0.65);
-      filter: 
-        contrast(175%) 
-        brightness(118%) 
-        saturate(140%) 
-        drop-shadow(0 1.5px 2px rgba(0, 10, 30, 0.45));
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35) !important;
+      filter: none !important;
+    }}
+
+    .font-white .water-drop-colon-dot {{
+      background: #ffffff !important;
+      background-image: none !important;
+      border: none !important;
+      outline: none !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35) !important;
+      filter: none !important;
     }}
 
     /* Light Theme Contrast Enhancements (For Pinstripe atmosphere, Knife-Edge Sharp) */
@@ -203,20 +201,13 @@ html_content = f'''<!DOCTYPE html>
         0 -0.8px 0.4px rgba(255, 255, 255, 0.95),
         0 1px 1px rgba(10, 25, 60, 0.4);
     }}
-    .theme-light .water-drop-colon-dot {{
-      background-image: 
-        linear-gradient(172deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.2) 28%, rgba(10, 25, 60, 0.1) 65%, rgba(10, 25, 60, 0.6) 100%),
-        var(--active-wp);
-      background-size: 100% 100%, 150% 150%;
-      background-position: center;
-      background-blend-mode: overlay, normal;
-      filter: 
-        contrast(175%) 
-        brightness(95%) 
-        drop-shadow(0 1.5px 2px rgba(10, 25, 60, 0.45));
-      box-shadow: 
-        0 -0.8px 0.4px rgba(255, 255, 255, 0.98),
-        0 1.2px 1.5px rgba(10, 25, 60, 0.55);
+    .theme-light:not(.font-white) .water-drop-colon-dot {{
+      background: #000000 !important;
+      background-image: none !important;
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      filter: none !important;
     }}
 
     /* Light Theme All Apps Drawer */
@@ -475,7 +466,7 @@ html_content = f'''<!DOCTYPE html>
   </div>
 
   <!-- Phone Chassis Device Frame (365x750) -->
-  <div class="relative w-[365px] h-[750px] rounded-[46px] phone-chassis overflow-hidden flex flex-col select-none transition-all duration-300 bg-alpine" id="phoneContainer">
+  <div class="relative w-[365px] h-[750px] rounded-[46px] phone-chassis overflow-hidden flex flex-col select-none transition-all duration-300 bg-alpine font-white" id="phoneContainer">
 
     <!-- ================= HOME SCREEN ================= -->
     <div id="homeScreen" class="absolute inset-x-0 top-7 bottom-20 px-7 flex flex-col justify-between z-20 transition-all duration-[380ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
@@ -841,8 +832,10 @@ html_content = f'''<!DOCTYPE html>
 
       if (currentFontColor === 'black') {{
         phone.classList.add('font-black');
+        phone.classList.remove('font-white');
       }} else if (currentFontColor === 'white') {{
         phone.classList.remove('font-black');
+        phone.classList.add('font-white');
       }}
 
       renderFavorites();
