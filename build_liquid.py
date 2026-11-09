@@ -1236,7 +1236,10 @@ html_content = f'''<!DOCTYPE html>
     <!-- ================= MINIMALIST TO-DO LIST (SWIPE RIGHT GESTURE) ================= -->
     <div id="todoScreen" class="hidden absolute inset-0 z-40 flex flex-col pt-8 pb-5 px-6 backdrop-blur-3xl transition-all duration-300">
       <div class="flex items-center justify-between pb-3.5 border-b border-white/10 settings-divider">
-        <div class="text-[14.5px] font-medium lowercase tracking-wide">tasks</div>
+        <div class="flex items-baseline space-x-2">
+          <span class="text-[14.5px] font-medium lowercase tracking-wide">tasks</span>
+          <span class="text-[11px] opacity-40 lowercase">24h ttl</span>
+        </div>
         <button onclick="closeTodoScreen()" class="text-[12px] font-medium lowercase opacity-70 hover:opacity-100 transition-opacity">done</button>
       </div>
 
@@ -1851,14 +1854,80 @@ html_content = f'''<!DOCTYPE html>
       }}
     }}
 
-    // ================= TO DO LIST / TASKS (SWIPE RIGHT GESTURE) =================
-    let todoItems = [
-      {{ id: 1, text: 'focus on deep work', done: false }},
-      {{ id: 2, text: 'take mindful pause', done: true }},
-      {{ id: 3, text: 'review daily schedule', done: false }}
-    ];
+    // ================= TO DO LIST / TASKS (SWIPE RIGHT GESTURE - 1 DAY TTL) =================
+    const TODO_TTL_MS = 24 * 60 * 60 * 1000; // 1 day Time To Live (86,400,000 ms)
+
+    function loadTodos() {{
+      try {{
+        const saved = localStorage.getItem('meos_todo_items');
+        if (saved) {{
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {{
+            const now = Date.now();
+            return parsed.filter(t => {{
+              const created = t.createdAt || t.id || now;
+              return (now - created) < TODO_TTL_MS;
+            }}).map(t => ({{
+              id: t.id,
+              text: t.text,
+              done: !!t.done,
+              createdAt: t.createdAt || t.id || now
+            }}));
+          }}
+        }}
+      }} catch (e) {{}}
+      const now = Date.now();
+      return [
+        {{ id: now - 3600000 * 2, text: 'focus on deep work', done: false, createdAt: now - 3600000 * 2 }},
+        {{ id: now - 3600000 * 5, text: 'take mindful pause', done: true, createdAt: now - 3600000 * 5 }},
+        {{ id: now - 3600000 * 9, text: 'review daily schedule', done: false, createdAt: now - 3600000 * 9 }}
+      ];
+    }}
+
+    function saveTodos() {{
+      try {{
+        localStorage.setItem('meos_todo_items', JSON.stringify(todoItems));
+      }} catch (e) {{}}
+    }}
+
+    let todoItems = loadTodos();
+
+    function cleanExpiredTodos() {{
+      const now = Date.now();
+      const beforeCount = todoItems.length;
+      // All items strictly have 1 day TTL, whether done or not
+      todoItems = todoItems.filter(item => {{
+        const created = item.createdAt || item.id || now;
+        return (now - created) < TODO_TTL_MS;
+      }});
+      if (todoItems.length !== beforeCount) {{
+        saveTodos();
+      }}
+    }}
+
+    // Auto-clean expired tasks periodically every 60 seconds
+    setInterval(() => {{
+      cleanExpiredTodos();
+      const todo = document.getElementById('todoScreen');
+      if (todo && !todo.classList.contains('hidden')) {{
+        renderTodos();
+      }}
+    }}, 60000);
+
+    function getTodoRemainingTime(createdAt) {{
+      const now = Date.now();
+      const remainingMs = TODO_TTL_MS - (now - createdAt);
+      if (remainingMs <= 0) return 'expiring';
+      const hours = Math.floor(remainingMs / (1000 * 60 * 60));
+      const minutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
+      if (hours > 0) {{
+        return `${{hours}}h left`;
+      }}
+      return `${{Math.max(1, minutes)}}m left`;
+    }}
 
     function openTodoScreen() {{
+      cleanExpiredTodos();
       renderTodos();
       document.getElementById('todoScreen').classList.remove('hidden');
     }}
@@ -1868,31 +1937,45 @@ html_content = f'''<!DOCTYPE html>
     }}
 
     function renderTodos() {{
+      cleanExpiredTodos();
       const container = document.getElementById('todoItemsList');
       if (!container) return;
       if (todoItems.length === 0) {{
-        container.innerHTML = `<div class="text-xs settings-subtext text-center py-10 lowercase">no tasks yet.<br>stay clear and present.</div>`;
+        container.innerHTML = `<div class="text-xs settings-subtext text-center py-10 lowercase">no tasks yet.<br>stay clear and present.<br><span class="opacity-40 text-[11px] mt-1.5 block">tasks expire after 24 hours</span></div>`;
         return;
       }}
       container.innerHTML = todoItems.map(item => `
         <div class="settings-row flex items-center justify-between py-2.5 px-2 rounded-xl cursor-pointer transition-colors" onclick="toggleTodoItem(${{item.id}})">
-          <span class="text-[13.5px] lowercase ${{item.done ? 'line-through opacity-40' : ''}}">${{item.text}}</span>
-          <span class="text-xs opacity-60">${{item.done ? '✓' : '○'}}</span>
+          <div class="flex items-center space-x-2.5 flex-1 min-w-0 pr-2">
+            <span class="text-xs opacity-60 flex-shrink-0">${{item.done ? '✓' : '○'}}</span>
+            <span class="text-[13.5px] lowercase truncate ${{item.done ? 'line-through opacity-40' : ''}}">${{item.text}}</span>
+          </div>
+          <span class="text-[11px] opacity-40 flex-shrink-0 lowercase">${{getTodoRemainingTime(item.createdAt)}}</span>
         </div>
       `).join('');
     }}
 
     function toggleTodoItem(id) {{
       const item = todoItems.find(t => t.id === id);
-      if (item) item.done = !item.done;
+      if (item) {{
+        item.done = !item.done;
+        saveTodos();
+      }}
       renderTodos();
     }}
 
     function addTodoItem() {{
       const input = document.getElementById('newTodoInput');
       if (!input || !input.value.trim()) return;
-      todoItems.push({{ id: Date.now(), text: input.value.trim(), done: false }});
+      const now = Date.now();
+      todoItems.push({{
+        id: now,
+        text: input.value.trim(),
+        done: false,
+        createdAt: now
+      }});
       input.value = '';
+      saveTodos();
       renderTodos();
     }}
 
