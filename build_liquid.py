@@ -1236,10 +1236,7 @@ html_content = f'''<!DOCTYPE html>
     <!-- ================= MINIMALIST TO-DO LIST (SWIPE RIGHT GESTURE) ================= -->
     <div id="todoScreen" class="hidden absolute inset-0 z-40 flex flex-col pt-8 pb-5 px-6 backdrop-blur-3xl transition-all duration-300">
       <div class="flex items-center justify-between pb-3.5 border-b border-white/10 settings-divider">
-        <div class="flex items-baseline space-x-2">
-          <span class="text-[14.5px] font-medium lowercase tracking-wide">tasks</span>
-          <span class="text-[11px] opacity-40 lowercase">24h ttl</span>
-        </div>
+        <div class="text-[14.5px] font-medium lowercase tracking-wide">tasks</div>
         <button onclick="closeTodoScreen()" class="text-[12px] font-medium lowercase opacity-70 hover:opacity-100 transition-opacity">done</button>
       </div>
 
@@ -1941,7 +1938,7 @@ html_content = f'''<!DOCTYPE html>
       const container = document.getElementById('todoItemsList');
       if (!container) return;
       if (todoItems.length === 0) {{
-        container.innerHTML = `<div class="text-xs settings-subtext text-center py-10 lowercase">no tasks yet.<br>stay clear and present.<br><span class="opacity-40 text-[11px] mt-1.5 block">tasks expire after 24 hours</span></div>`;
+        container.innerHTML = `<div class="text-xs settings-subtext text-center py-10 lowercase">no tasks yet.<br>stay clear and present.</div>`;
         return;
       }}
       container.innerHTML = todoItems.map(item => `
