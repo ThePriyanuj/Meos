@@ -123,7 +123,7 @@ fun AppDrawerScreen(
                 detectDragGestures(
                     onDragStart = { totalDragY = 0f },
                     onDragEnd = {
-                        if (totalDragY > 80f && listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0) {
+                        if (totalDragY > 40f && listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset <= 10) {
                             onBack()
                         }
                     },

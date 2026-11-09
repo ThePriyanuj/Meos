@@ -73,6 +73,8 @@ fun LiquidHomeScreen(
     onOpenDrawer: () -> Unit = {},
     onUpiScanClick: () -> Unit = {},
     onQuickDial: () -> Unit = {},
+    onSwipeRight: () -> Unit = {},
+    onSwipeLeft: () -> Unit = {},
     fontColor: com.priyanuj.minimalist.data.FontColor = com.priyanuj.minimalist.data.FontColor.WHITE,
     atmosphere: com.priyanuj.minimalist.data.Atmosphere = com.priyanuj.minimalist.data.Atmosphere.ALPINE,
     timeHours: String = "21",
@@ -137,9 +139,15 @@ fun LiquidHomeScreen(
                     },
                     onDragEnd = {
                         val swipeThreshold = 40f
-                        if (abs(totalDragY) > abs(totalDragX)) {
+                        if (abs(totalDragY) >= abs(totalDragX)) {
                             if (totalDragY < -swipeThreshold) {
                                 onOpenDrawer() // Slide up -> Open All Apps
+                            }
+                        } else {
+                            if (totalDragX < -swipeThreshold) {
+                                onSwipeLeft()  // Swipe Left
+                            } else if (totalDragX > swipeThreshold) {
+                                onSwipeRight() // Swipe Right
                             }
                         }
                     },

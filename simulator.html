@@ -291,6 +291,18 @@
       color: rgba(14, 116, 144, 0.65) !important;
     }
 
+    /* Optimized Touch & Gesture Mechanics */
+    #phoneContainer {
+      touch-action: pan-x pan-y;
+      overscroll-behavior: contain;
+    }
+    #homeScreen {
+      touch-action: none;
+    }
+    #allAppsList {
+      overscroll-behavior-y: contain;
+    }
+
     /* ================= DYNAMIC FONT COLOR: BLACK OVERRIDE ================= */
     .font-black .water-drop-numeral-long {
       color: #000000 !important;
@@ -1497,7 +1509,18 @@
     }
 
     // App Launch & Mindful Interception
+    let wasSwiping = false;
+    let swipeCooldownTimer = null;
+    function markSwiped() {
+      wasSwiping = true;
+      clearTimeout(swipeCooldownTimer);
+      swipeCooldownTimer = setTimeout(() => {
+        wasSwiping = false;
+      }, 280);
+    }
+
     function launchApp(id) {
+      if (wasSwiping) return;
       const app = apps.find(a => a.id === id);
       if (!app) return;
 
@@ -2036,12 +2059,10 @@
       }, 2000);
     }
 
-    // ================= SLIDE UP / SCROLL UP TO OPEN ALL APPS =================
-    let touchStartY = 0;
-    let touchStartX = 0;
-    let isSwiping = false;
-
+    // ================= OPTIMIZED GESTURE ENGINE (HOME & ALL APPS DRAWER) =================
     const phoneContainer = document.getElementById('phoneContainer');
+    const drawerScreen = document.getElementById('drawerScreen');
+    const allAppsList = document.getElementById('allAppsList');
 
     function isHomeScreenActive() {
       const settings = document.getElementById('settingsScreen');
@@ -2056,6 +2077,7 @@
     let lastTapTime = 0;
     function onHomeScreenClick(e) {
       if (!isHomeScreenActive()) return;
+      if (wasSwiping) return;
       if (e.target.closest('button') || e.target.closest('#favoriteAppsContainer') || e.target.closest('#clockWrapper') || e.target.closest('#dateHeader')) return;
       
       const currentTime = new Date().getTime();
@@ -2068,124 +2090,204 @@
       lastTapTime = currentTime;
     }
 
-    function handleHomeSwipe(startX, startY, endX, endY) {
-      if (!isHomeScreenActive()) return;
-      const deltaY = startY - endY; // positive when swiping up
-      const rawDeltaX = startX - endX; // positive when swiping left, negative when swiping right
-      const absX = Math.abs(rawDeltaX);
-      const absY = Math.abs(deltaY);
+    let gestureStartX = 0;
+    let gestureStartY = 0;
+    let gestureStartScrollTop = 0;
+    let isTrackingGesture = false;
+    let gestureMode = null; // 'home', 'drawer', 'todo'
+    let touchHandled = false;
 
-      // 1. Slide up -> Open All Apps Drawer
-      if (deltaY > 20 && deltaY > absX * 0.45) {
-        openDrawer();
+    function handleGestureStart(clientX, clientY, target) {
+      // Ignore interactions on alphabet scrubber
+      if (target && target.closest && target.closest('#alphabetScrubber')) {
+        isTrackingGesture = false;
         return;
       }
 
-      // 2. Swipe Left -> Open Search (if enabled)
-      if (rawDeltaX > 30 && absX > absY * 0.7) {
-        if (settingsState.swipeSearch) {
-          openDrawer();
-          setTimeout(() => {
-            const input = document.getElementById('searchInput');
-            if (input) input.focus();
-          }, 350);
-        }
+      // Check if Settings Screen is open - settings handles its own tap navigation
+      const settings = document.getElementById('settingsScreen');
+      if (settings && !settings.classList.contains('hidden')) {
+        isTrackingGesture = false;
         return;
       }
 
-      // 3. Swipe Right -> Open To Do List (if enabled)
-      if (rawDeltaX < -30 && absX > absY * 0.7) {
-        if (settingsState.swipeTodo) {
-          openTodoScreen();
-        }
+      const todo = document.getElementById('todoScreen');
+      if (todo && !todo.classList.contains('hidden')) {
+        gestureMode = 'todo';
+        gestureStartX = clientX;
+        gestureStartY = clientY;
+        isTrackingGesture = true;
+        return;
+      }
+
+      if (isHomeScreenActive()) {
+        gestureMode = 'home';
+        gestureStartX = clientX;
+        gestureStartY = clientY;
+        isTrackingGesture = true;
+        return;
+      }
+
+      if (isDrawerOpen) {
+        gestureMode = 'drawer';
+        gestureStartX = clientX;
+        gestureStartY = clientY;
+        const inList = target && target.closest && target.closest('#allAppsList');
+        gestureStartScrollTop = inList ? (allAppsList ? allAppsList.scrollTop : 0) : 0;
+        isTrackingGesture = true;
         return;
       }
     }
 
-    // 1. Mouse Wheel & Trackpad Scroll on Home Screen
-    phoneContainer.addEventListener('wheel', (e) => {
-      if (!isHomeScreenActive()) return;
-      // Any scroll action on the home screen opens the all apps catalog
-      if (Math.abs(e.deltaY) > 6 || Math.abs(e.deltaX) > 6) {
-        openDrawer();
+    function handleGestureMove(clientX, clientY) {
+      if (!isTrackingGesture) return;
+      const dragX = clientX - gestureStartX;
+      const dragY = clientY - gestureStartY;
+      if (Math.abs(dragX) > 10 || Math.abs(dragY) > 10) {
+        wasSwiping = true;
+      }
+    }
+
+    function handleGestureEnd(clientX, clientY) {
+      if (!isTrackingGesture) return;
+      isTrackingGesture = false;
+
+      const dragX = clientX - gestureStartX; // > 0: moved right, < 0: moved left
+      const dragY = clientY - gestureStartY; // > 0: moved down, < 0: moved up
+      const absX = Math.abs(dragX);
+      const absY = Math.abs(dragY);
+      const THRESHOLD = 22; // Featherlight, perfectly responsive threshold
+
+      if (absX < THRESHOLD && absY < THRESHOLD) {
+        setTimeout(() => { wasSwiping = false; }, 50);
+        gestureMode = null;
+        return;
+      }
+
+      markSwiped();
+
+      if (gestureMode === 'home') {
+        if (absY >= absX) {
+          // Vertical dominant
+          if (dragY <= -THRESHOLD) {
+            // 1. UP SWIPE -> Open All Apps Drawer
+            openDrawer();
+          }
+        } else {
+          // Horizontal dominant
+          if (dragX <= -THRESHOLD) {
+            // 2. LEFT SWIPE -> Open Search (if enabled)
+            if (settingsState.swipeSearch) {
+              openDrawer();
+              setTimeout(() => {
+                const input = document.getElementById('searchInput');
+                if (input) {
+                  input.focus();
+                  input.select();
+                }
+              }, 60);
+            }
+          } else if (dragX >= THRESHOLD) {
+            // 3. RIGHT SWIPE -> Open To Do List (if enabled)
+            if (settingsState.swipeTodo) {
+              openTodoScreen();
+            }
+          }
+        }
+      } else if (gestureMode === 'drawer') {
+        if (absY >= absX && dragY >= THRESHOLD) {
+          // DOWN SWIPE in All Apps Drawer -> Come back to home page
+          const currentScroll = allAppsList ? allAppsList.scrollTop : 0;
+          if (gestureStartScrollTop <= 10 || currentScroll <= 10) {
+            goHome();
+          }
+        }
+      } else if (gestureMode === 'todo') {
+        if ((absX > absY && dragX <= -THRESHOLD) || (absY > absX && dragY >= THRESHOLD)) {
+          closeTodoScreen();
+        }
+      }
+
+      gestureMode = null;
+    }
+
+    // 1. Touch Events (Mobile, Tablets, WebViews & Touch Emulation)
+    phoneContainer.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches.length > 0) {
+        touchHandled = true;
+        handleGestureStart(e.touches[0].clientX, e.touches[0].clientY, e.target);
       }
     }, { passive: true });
 
-    // 2. Touch Swiping Up (Mobile & Touch Devices)
-    phoneContainer.addEventListener('touchstart', (e) => {
-      if (!isHomeScreenActive()) return;
-      touchStartY = e.touches[0].clientY;
-      touchStartX = e.touches[0].clientX;
-      isSwiping = true;
+    window.addEventListener('touchmove', (e) => {
+      if (touchHandled && e.touches && e.touches.length > 0) {
+        handleGestureMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
     }, { passive: true });
 
     window.addEventListener('touchend', (e) => {
-      if (!isSwiping) return;
-      isSwiping = false;
-      if (!e.changedTouches || e.changedTouches.length === 0) return;
-      handleHomeSwipe(touchStartX, touchStartY, e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-    }, { passive: true });
-
-    // 3. Desktop Mouse / Pointer Dragging Up
-    phoneContainer.addEventListener('pointerdown', (e) => {
-      if (!isHomeScreenActive()) return;
-      touchStartY = e.clientY;
-      touchStartX = e.clientX;
-      isSwiping = true;
-    });
-
-    window.addEventListener('pointerup', (e) => {
-      if (!isSwiping) return;
-      isSwiping = false;
-      handleHomeSwipe(touchStartX, touchStartY, e.clientX, e.clientY);
-    });
-
-    // Swipe Down / Scroll Down in App Drawer to Return Home
-    const drawerScreen = document.getElementById('drawerScreen');
-    const allAppsList = document.getElementById('allAppsList');
-    let drawerTouchStartY = 0;
-    let drawerTouchStartX = 0;
-    let isDrawerSwiping = false;
-
-    drawerScreen.addEventListener('touchstart', (e) => {
-      if (!isDrawerOpen) return;
-      drawerTouchStartY = e.touches[0].clientY;
-      drawerTouchStartX = e.touches[0].clientX;
-      isDrawerSwiping = true;
-    }, { passive: true });
-
-    drawerScreen.addEventListener('touchend', (e) => {
-      if (!isDrawerSwiping) return;
-      isDrawerSwiping = false;
-      const touchEndY = e.changedTouches[0].clientY;
-      const touchEndX = e.changedTouches[0].clientX;
-      const deltaY = touchEndY - drawerTouchStartY; // positive when dragging DOWN
-      const deltaX = Math.abs(drawerTouchStartX - touchEndX);
-
-      // If at or near top of the apps list and swiped down by 35px+
-      if (allAppsList.scrollTop <= 15 && deltaY > 35 && deltaY > deltaX) {
-        goHome();
+      if (touchHandled) {
+        if (e.changedTouches && e.changedTouches.length > 0) {
+          handleGestureEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+        } else {
+          isTrackingGesture = false;
+        }
+        setTimeout(() => { touchHandled = false; }, 200);
       }
     }, { passive: true });
 
-    // Desktop Mouse Drag down in drawer to Return Home
-    drawerScreen.addEventListener('mousedown', (e) => {
-      if (!isDrawerOpen) return;
-      drawerTouchStartY = e.clientY;
-      drawerTouchStartX = e.clientX;
-      isDrawerSwiping = true;
+    window.addEventListener('touchcancel', () => {
+      isTrackingGesture = false;
+      touchHandled = false;
     });
 
-    drawerScreen.addEventListener('mouseup', (e) => {
-      if (!isDrawerSwiping) return;
-      isDrawerSwiping = false;
-      const deltaY = e.clientY - drawerTouchStartY;
-      const deltaX = Math.abs(drawerTouchStartX - e.clientX);
+    // 2. Mouse / Pointer Events (Desktop Dragging)
+    phoneContainer.addEventListener('mousedown', (e) => {
+      if (touchHandled) return;
+      handleGestureStart(e.clientX, e.clientY, e.target);
+    });
 
-      if (allAppsList.scrollTop <= 15 && deltaY > 35 && deltaY > deltaX) {
-        goHome();
+    window.addEventListener('mousemove', (e) => {
+      if (touchHandled) return;
+      handleGestureMove(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('mouseup', (e) => {
+      if (touchHandled) return;
+      handleGestureEnd(e.clientX, e.clientY);
+    });
+
+    // 3. Trackpad & Mouse Wheel Gestures
+    phoneContainer.addEventListener('wheel', (e) => {
+      const absY = Math.abs(e.deltaY);
+      const absX = Math.abs(e.deltaX);
+
+      if (isHomeScreenActive()) {
+        if (absY >= absX && e.deltaY > 15) {
+          // Scroll up / wheel down on home screen -> Open Drawer
+          openDrawer();
+        } else if (absX > absY) {
+          if (e.deltaX > 25 && settingsState.swipeSearch) {
+            // Swiped left -> Open Search
+            openDrawer();
+            setTimeout(() => {
+              const input = document.getElementById('searchInput');
+              if (input) { input.focus(); input.select(); }
+            }, 60);
+          } else if (e.deltaX < -25 && settingsState.swipeTodo) {
+            // Swiped right -> Open To Do List
+            openTodoScreen();
+          }
+        }
+      } else if (isDrawerOpen) {
+        const settings = document.getElementById('settingsScreen');
+        if (settings && !settings.classList.contains('hidden')) return;
+        // In All Apps: if at top and scrolling down (deltaY < -15) -> Go Home
+        if (absY >= absX && e.deltaY < -15 && allAppsList && allAppsList.scrollTop <= 0) {
+          goHome();
+        }
       }
-    });
+    }, { passive: true });
 
     // Init
     setupScrubber();

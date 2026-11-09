@@ -102,6 +102,8 @@ class MainActivity : ComponentActivity() {
                                         onOpenDrawer = { viewModel.currentScreen.value = Screen.DRAWER },
                                         onUpiScanClick = { viewModel.repository.openPaymentScanner(paymentApp) },
                                         onQuickDial = { viewModel.repository.openDialer() },
+                                        onSwipeRight = { viewModel.repository.openDialer() },
+                                        onSwipeLeft = { viewModel.currentScreen.value = Screen.DRAWER },
                                         fontColor = fontColor,
                                         atmosphere = atmosphere
                                     )
