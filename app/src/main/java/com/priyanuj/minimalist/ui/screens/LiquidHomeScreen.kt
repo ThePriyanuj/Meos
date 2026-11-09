@@ -484,11 +484,5 @@ fun getAtmosphereBrush(atmosphere: com.priyanuj.minimalist.data.Atmosphere): Bru
         com.priyanuj.minimalist.data.Atmosphere.STONE -> Brush.verticalGradient(
             colors = listOf(Color(0xFF44403C), Color(0xFF292524), Color(0xFF1C1917), Color(0xFF0C0A09))
         )
-        com.priyanuj.minimalist.data.Atmosphere.PINSTRIPE -> Brush.verticalGradient(
-            colors = listOf(Color(0xFFE0E0E0), Color(0xFFF0F0F0))
-        )
-        com.priyanuj.minimalist.data.Atmosphere.NEOCLASSICAL -> Brush.verticalGradient(
-            colors = listOf(Color(0xFF3A3F47), Color(0xFF1E2126))
-        )
     }
 }

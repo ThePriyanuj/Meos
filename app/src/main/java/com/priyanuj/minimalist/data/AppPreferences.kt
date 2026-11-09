@@ -55,9 +55,7 @@ enum class Atmosphere(val displayName: String, val isLight: Boolean = false) {
     BLACK("obsidian black", false),
     WHITE("alabaster white", true),
     SLATE("charcoal slate", false),
-    STONE("warm stone", false),
-    PINSTRIPE("pinstripe", true),
-    NEOCLASSICAL("neoclassical", false)
+    STONE("warm stone", false)
 }
 
 class AppPreferences(private val context: Context) {

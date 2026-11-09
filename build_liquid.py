@@ -5,12 +5,6 @@ import os
 with open('alpine_b64.txt', 'r') as f:
     alpine_b64 = f.read().strip()
 
-with open('pinstripe_b64.txt', 'r') as f:
-    pinstripe_b64 = f.read().strip()
-
-with open('wallpaper_b64.txt', 'r') as f:
-    neoclassical_b64 = f.read().strip()
-
 html_content = f'''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,8 +60,6 @@ html_content = f'''<!DOCTYPE html>
       --wp-white: linear-gradient(160deg, #f8fafc 0%, #e2e8f0 45%, #cbd5e1 75%, #94a3b8 100%);
       --wp-slate: linear-gradient(160deg, #334155 0%, #1e293b 40%, #0f172a 75%, #020617 100%);
       --wp-stone: linear-gradient(160deg, #44403c 0%, #292524 40%, #1c1917 75%, #0c0a09 100%);
-      --wp-pinstripe: url('data:image/jpeg;base64,{pinstripe_b64}');
-      --wp-neoclassical: url('data:image/jpeg;base64,{neoclassical_b64}');
       --active-wp: var(--wp-alpine);
     }}
 
@@ -119,16 +111,6 @@ html_content = f'''<!DOCTYPE html>
       background-image: var(--wp-stone);
       background-size: cover;
       background-position: center;
-    }}
-    .bg-pinstripe {{
-      background-image: var(--wp-pinstripe);
-      background-size: cover;
-      background-position: center;
-    }}
-    .bg-neoclassical {{
-      background-image: var(--wp-neoclassical);
-      background-size: cover;
-      background-position: center bottom;
     }}
     .bg-oled {{
       background: #000000 !important;
@@ -224,7 +206,7 @@ html_content = f'''<!DOCTYPE html>
       filter: none !important;
     }}
 
-    /* Light Theme Contrast Enhancements (For Pinstripe atmosphere, Knife-Edge Sharp) */
+    /* Light Theme Contrast Enhancements (For Alabaster White atmosphere, Knife-Edge Sharp) */
     .theme-light .water-drop-numeral-long {{
       background-image: 
         linear-gradient(172deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.2) 28%, rgba(10, 25, 60, 0.1) 65%, rgba(10, 25, 60, 0.6) 100%),
@@ -276,7 +258,7 @@ html_content = f'''<!DOCTYPE html>
       color: rgba(15, 23, 42, 0.5) !important;
     }}
 
-    /* Light Theme (Wallpapers with Mostly White: Alabaster White & Pinstripe):
+    /* Light Theme (Wallpapers with Mostly White: Alabaster White):
        Light Blue Tint on BOTH the 'Call & Scan' Home Banner and the Search Banner */
     .theme-light #unifiedBanner {{
       background: linear-gradient(135deg, rgba(186, 230, 253, 0.55) 0%, rgba(224, 242, 254, 0.38) 100%) !important;
@@ -578,14 +560,6 @@ html_content = f'''<!DOCTYPE html>
       <span class="w-2 h-2 rounded-full" style="background: #78716c;"></span>
       <span>stone</span>
     </button>
-    <button onclick="setWallpaper('pinstripe')" id="btnWpPinstripe" class="shrink-0 px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-all flex items-center space-x-1.5">
-      <span class="w-2 h-2 rounded-full" style="background: #e2e8f0;"></span>
-      <span>pinstripe</span>
-    </button>
-    <button onclick="setWallpaper('neoclassical')" id="btnWpNeo" class="shrink-0 px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-all flex items-center space-x-1.5">
-      <span class="w-2 h-2 rounded-full" style="background: #3a3f47;"></span>
-      <span>neoclassical</span>
-    </button>
   </div>
 
   <!-- Phone Chassis Device Frame (365x750) -->
@@ -802,28 +776,6 @@ html_content = f'''<!DOCTYPE html>
               </div>
               <span id="checkStone" class="text-white font-medium text-sm hidden">✓</span>
             </div>
-
-            <div onclick="setWallpaper('pinstripe')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
-              <div class="flex items-center space-x-2.5">
-                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #ffffff, #94a3b8);"></div>
-                <div>
-                  <div class="font-medium lowercase text-[13px]">pinstripe</div>
-                  <div class="text-[10px] text-white/50 lowercase">vertical navy tailored stripes with razor optics</div>
-                </div>
-              </div>
-              <span id="checkPinstripe" class="text-white font-medium text-sm hidden">✓</span>
-            </div>
-
-            <div onclick="setWallpaper('neoclassical')" class="cursor-pointer water-dock p-2.5 flex items-center justify-between text-white">
-              <div class="flex items-center space-x-2.5">
-                <div class="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style="background: linear-gradient(135deg, #3a3f47, #1e2126);"></div>
-                <div>
-                  <div class="font-medium lowercase text-[13px]">neoclassical</div>
-                  <div class="text-[10px] text-white/50 lowercase">architectural stone refracted through clear water drops</div>
-                </div>
-              </div>
-              <span id="checkNeo" class="text-white font-medium text-sm hidden">✓</span>
-            </div>
           </div>
         </div>
 
@@ -1020,9 +972,7 @@ html_content = f'''<!DOCTYPE html>
       {{ id: 'black', name: 'obsidian black', isLight: false }},
       {{ id: 'white', name: 'alabaster white', isLight: true }},
       {{ id: 'slate', name: 'charcoal slate', isLight: false }},
-      {{ id: 'stone', name: 'warm stone', isLight: false }},
-      {{ id: 'pinstripe', name: 'pinstripe', isLight: true }},
-      {{ id: 'neoclassical', name: 'neoclassical', isLight: false }}
+      {{ id: 'stone', name: 'warm stone', isLight: false }}
     ];
 
     // Wallpaper Switcher
@@ -1044,16 +994,6 @@ html_content = f'''<!DOCTYPE html>
             : 'shrink-0 px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-all flex items-center space-x-1.5';
         }}
       }});
-
-      // Legacy check Neo / btn Neo support
-      const checkNeo = document.getElementById('checkNeo');
-      if (checkNeo) checkNeo.classList.toggle('hidden', wp !== 'neoclassical');
-      const btnWpNeo = document.getElementById('btnWpNeo');
-      if (btnWpNeo) {{
-        btnWpNeo.className = (wp === 'neoclassical')
-          ? 'shrink-0 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-medium transition-all flex items-center space-x-1.5'
-          : 'shrink-0 px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-all flex items-center space-x-1.5';
-      }}
 
       const currentAtmo = allAtmospheres.find(a => a.id === wp) || allAtmospheres[0];
       const isLight = currentAtmo.isLight;
