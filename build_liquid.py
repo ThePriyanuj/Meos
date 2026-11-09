@@ -778,6 +778,7 @@ html_content = f'''<!DOCTYPE html>
         <!-- Drawer: Search Input -->
         <div id="bannerSearchBox" class="absolute inset-0 flex items-center opacity-0 pointer-events-none transition-opacity duration-200">
           <input type="text" id="searchInput" placeholder="search apps..." oninput="onSearch(this.value)" 
+                 onkeydown="if(event.key === 'Enter') handleSearchEnter(); else if(event.key === 'Escape') goHome();"
                  class="bg-transparent border-0 text-white placeholder-white/40 text-[14px] font-normal w-full focus:outline-none tracking-wide">
           <button id="clearSearchBtn" onclick="clearSearch()" class="hidden text-white/60 hover:text-white text-xs px-1">✕</button>
         </div>
@@ -1566,6 +1567,7 @@ html_content = f'''<!DOCTYPE html>
 
       container.innerHTML = filtered.map(app => `
         <div class="flex items-center justify-between group h-10 px-2 cursor-pointer select-none hover:bg-white/5 transition-colors"
+             data-letter="${{app.name.charAt(0).toLowerCase()}}"
              onclick="launchApp('${{app.id}}')"
              oncontextmenu="event.preventDefault(); openContextMenu('${{app.id}}')">
           <!-- Matching Home Page Clear Water Drop Text with ZERO card/border -->
@@ -1584,9 +1586,14 @@ html_content = f'''<!DOCTYPE html>
     }}
 
     function scrollToLetter(letter) {{
-      const match = apps.find(a => !a.hidden && a.name.toLowerCase().startsWith(letter));
-      if (match) {{
-        showToast(`Jump to '${{letter}}'`);
+      const container = document.getElementById('allAppsList');
+      if (!container) return;
+      const target = container.querySelector(`[data-letter="${{letter.toLowerCase()}}"]`);
+      if (target) {{
+        target.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+        showToast(`jump to '${{letter}}'`);
+      }} else {{
+        showToast(`no apps starting with '${{letter}}'`);
       }}
     }}
 
@@ -2069,9 +2076,11 @@ html_content = f'''<!DOCTYPE html>
     }}
 
     function recommendToFriend() {{
-      if (navigator.clipboard) {{
-        navigator.clipboard.writeText('https://meoslauncher.app');
-      }}
+      try {{
+        if (navigator.clipboard && navigator.clipboard.writeText) {{
+          navigator.clipboard.writeText('https://meoslauncher.app').catch(() => {{}});
+        }}
+      }} catch(e) {{}}
       showToast('link copied to clipboard');
     }}
 
@@ -2134,11 +2143,16 @@ html_content = f'''<!DOCTYPE html>
       document.getElementById('settingsScreen').classList.remove('hidden');
     }}
 
-    function quickDial() {{
-      showToast('Opened Phone Dialer');
+    // Search
+    function handleSearchEnter() {{
+      const input = document.getElementById('searchInput');
+      const query = (input?.value || '').trim().toLowerCase();
+      const match = apps.find(a => !a.hidden && a.name.toLowerCase().includes(query));
+      if (match) {{
+        launchApp(match.id);
+      }}
     }}
 
-    // Search
     function onSearch(query) {{
       const clearBtn = document.getElementById('clearSearchBtn');
       clearBtn.classList.toggle('hidden', query.trim().length === 0);
@@ -2170,41 +2184,50 @@ html_content = f'''<!DOCTYPE html>
 
     function toggleFavorite() {{
       if (!selectedApp) return;
-      selectedApp.fav = !selectedApp.fav;
+      const app = selectedApp;
+      app.fav = !app.fav;
+      const isFav = app.fav;
+      const appName = app.name;
       closeContextMenu();
       renderFavorites();
-      renderAllApps(document.getElementById('searchInput').value);
-      showToast(`${{selectedApp.name}} ${{selectedApp.fav ? 'added to' : 'removed from'}} favorites`);
+      renderAllApps(document.getElementById('searchInput')?.value || '');
+      showToast(`${{appName}} ${{isFav ? 'added to' : 'removed from'}} favorites`);
     }}
 
     function toggleMindfulDelay() {{
       if (!selectedApp) return;
-      if (selectedApp.delay === 0) selectedApp.delay = 5;
-      else if (selectedApp.delay === 5) selectedApp.delay = 15;
-      else selectedApp.delay = 0;
-
+      const app = selectedApp;
+      if (app.delay === 0) app.delay = 5;
+      else if (app.delay === 5) app.delay = 15;
+      else app.delay = 0;
+      const delay = app.delay;
+      const appName = app.name;
       closeContextMenu();
       renderFavorites();
-      renderAllApps(document.getElementById('searchInput').value);
-      showToast(`${{selectedApp.name}} delay set to ${{selectedApp.delay}}s`);
+      renderAllApps(document.getElementById('searchInput')?.value || '');
+      showToast(`${{appName}} delay set to ${{delay}}s`);
     }}
 
     function hideApp() {{
       if (!selectedApp) return;
-      selectedApp.hidden = true;
+      const app = selectedApp;
+      app.hidden = true;
+      const appName = app.name;
       closeContextMenu();
       renderFavorites();
-      renderAllApps(document.getElementById('searchInput').value);
-      showToast(`Hidden ${{selectedApp.name}}`);
+      renderAllApps(document.getElementById('searchInput')?.value || '');
+      showToast(`hidden ${{appName}}`);
     }}
 
     function renameApp() {{
       if (!selectedApp) return;
-      const newName = prompt(`Rename ${{selectedApp.name}}:`, selectedApp.name);
+      const app = selectedApp;
+      const newName = prompt(`rename ${{app.name}}:`, app.name);
       if (newName && newName.trim()) {{
-        selectedApp.name = newName.trim();
+        app.name = newName.trim();
         renderFavorites();
-        renderAllApps(document.getElementById('searchInput').value);
+        renderAllApps(document.getElementById('searchInput')?.value || '');
+        showToast(`renamed to ${{app.name}}`);
       }}
       closeContextMenu();
     }}
@@ -2230,10 +2253,14 @@ html_content = f'''<!DOCTYPE html>
       const settings = document.getElementById('settingsScreen');
       const todo = document.getElementById('todoScreen');
       const lock = document.getElementById('lockScreenOverlay');
+      const ctx = document.getElementById('contextMenu');
+      const mindful = document.getElementById('mindfulModal');
       return !isDrawerOpen && 
         (!settings || settings.classList.contains('hidden')) && 
         (!todo || todo.classList.contains('hidden')) &&
-        (!lock || lock.classList.contains('hidden'));
+        (!lock || lock.classList.contains('hidden')) &&
+        (!ctx || ctx.classList.contains('hidden')) &&
+        (!mindful || mindful.classList.contains('hidden'));
     }}
 
     let lastTapTime = 0;
