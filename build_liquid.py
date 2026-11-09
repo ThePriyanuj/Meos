@@ -463,95 +463,95 @@ html_content = f'''<!DOCTYPE html>
     <!-- ================= SETTINGS SCREEN ================= -->
     <div id="settingsScreen" class="hidden absolute inset-0 z-40 flex flex-col pt-8 pb-5 px-5 bg-black/85 backdrop-blur-3xl text-white">
       <div class="flex items-center justify-between pb-3 border-b border-white/15">
-        <div class="text-[15px] font-medium tracking-wide">launcher settings</div>
-        <button onclick="goHome()" class="text-xs text-white/70 hover:text-white font-medium">done</button>
+        <div class="text-[15px] font-medium tracking-wide lowercase">launcher settings</div>
+        <button onclick="goHome()" class="text-xs text-white/70 hover:text-white font-medium lowercase">done</button>
       </div>
 
       <div class="flex-1 overflow-y-auto hide-scrollbar mt-4 space-y-6 text-xs text-white/80">
         <!-- Visual Atmosphere Selection -->
         <div>
-          <div class="text-[10px] uppercase tracking-widest text-cyan-400 font-semibold mb-2.5">Atmosphere Background</div>
+          <div class="text-[11px] font-medium tracking-wider text-white/40 lowercase mb-2.5">atmosphere</div>
           <div class="space-y-2">
             <div onclick="setWallpaper('alpine')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
               <div>
-                <div class="font-medium">🏔️ Alpine Sky</div>
-                <div class="text-[10px] text-white/60">Radiant azure alpine sky with longitudinal water text</div>
+                <div class="font-medium lowercase text-[13px]">alpine sky</div>
+                <div class="text-[10px] text-white/50 lowercase">radiant azure mountain sky with liquid refraction</div>
               </div>
-              <span id="checkAlpine" class="text-cyan-400 font-bold">✓</span>
+              <span id="checkAlpine" class="text-white font-medium text-sm">✓</span>
             </div>
 
             <div onclick="setWallpaper('pinstripe')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
               <div>
-                <div class="font-medium">👔 Pinstripe (From Photo)</div>
-                <div class="text-[10px] text-white/60">Vertical navy stripes bending through liquid numerals</div>
+                <div class="font-medium lowercase text-[13px]">pinstripe</div>
+                <div class="text-[10px] text-white/50 lowercase">vertical navy stripes refracted through liquid numerals</div>
               </div>
-              <span id="checkPinstripe" class="text-cyan-400 font-bold hidden">✓</span>
+              <span id="checkPinstripe" class="text-white font-medium text-sm hidden">✓</span>
             </div>
 
             <div onclick="setWallpaper('neoclassical')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
               <div>
-                <div class="font-medium">🏛️ Neoclassical Columns</div>
-                <div class="text-[10px] text-white/60">Columns refracting through clear water drops</div>
+                <div class="font-medium lowercase text-[13px]">neoclassical</div>
+                <div class="text-[10px] text-white/50 lowercase">architectural stone refracted through clear water drops</div>
               </div>
-              <span id="checkNeo" class="text-cyan-400 font-bold hidden">✓</span>
+              <span id="checkNeo" class="text-white font-medium text-sm hidden">✓</span>
             </div>
           </div>
         </div>
 
         <!-- Quick Pay Scanner App Selection -->
         <div>
-          <div class="text-[10px] uppercase tracking-widest text-cyan-400 font-semibold mb-2.5">Quick Pay Scanner App</div>
+          <div class="text-[11px] font-medium tracking-wider text-white/40 lowercase mb-2.5">payment scanner</div>
           <div class="space-y-2">
-            <div onclick="setPaymentApp('gpay', 'Google Pay')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
+            <div onclick="setPaymentApp('gpay', 'google pay')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
               <div>
-                <div class="font-medium">Google Pay</div>
-                <div class="text-[10px] text-white/60">Banner scanner icon opens Google Pay directly</div>
+                <div class="font-medium lowercase text-[13px]">google pay</div>
+                <div class="text-[10px] text-white/50 lowercase">banner scan icon opens google pay directly</div>
               </div>
-              <span id="checkPayGpay" class="text-cyan-400 font-bold">✓</span>
+              <span id="checkPayGpay" class="text-white font-medium text-sm">✓</span>
             </div>
 
-            <div onclick="setPaymentApp('phonepe', 'PhonePe')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
+            <div onclick="setPaymentApp('phonepe', 'phonepe')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
               <div>
-                <div class="font-medium">PhonePe</div>
-                <div class="text-[10px] text-white/60">Banner scanner icon opens PhonePe scanner directly</div>
+                <div class="font-medium lowercase text-[13px]">phonepe</div>
+                <div class="text-[10px] text-white/50 lowercase">banner scan icon opens phonepe scanner directly</div>
               </div>
-              <span id="checkPayPhonepe" class="text-cyan-400 font-bold hidden">✓</span>
+              <span id="checkPayPhonepe" class="text-white font-medium text-sm hidden">✓</span>
             </div>
 
-            <div onclick="setPaymentApp('paytm', 'Paytm')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
+            <div onclick="setPaymentApp('paytm', 'paytm')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
               <div>
-                <div class="font-medium">Paytm</div>
-                <div class="text-[10px] text-white/60">Banner scanner icon opens Paytm scanner directly</div>
+                <div class="font-medium lowercase text-[13px]">paytm</div>
+                <div class="text-[10px] text-white/50 lowercase">banner scan icon opens paytm scanner directly</div>
               </div>
-              <span id="checkPayPaytm" class="text-cyan-400 font-bold hidden">✓</span>
+              <span id="checkPayPaytm" class="text-white font-medium text-sm hidden">✓</span>
             </div>
 
-            <div onclick="setPaymentApp('bhim', 'BHIM UPI')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
+            <div onclick="setPaymentApp('bhim', 'bhim upi')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
               <div>
-                <div class="font-medium">BHIM UPI</div>
-                <div class="text-[10px] text-white/60">Banner scanner icon opens BHIM scanner directly</div>
+                <div class="font-medium lowercase text-[13px]">bhim upi</div>
+                <div class="text-[10px] text-white/50 lowercase">banner scan icon opens bhim scanner directly</div>
               </div>
-              <span id="checkPayBhim" class="text-cyan-400 font-bold hidden">✓</span>
+              <span id="checkPayBhim" class="text-white font-medium text-sm hidden">✓</span>
             </div>
 
-            <div onclick="setPaymentApp('system', 'System UPI Scanner')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
+            <div onclick="setPaymentApp('system', 'system upi')" class="cursor-pointer water-dock p-3 flex items-center justify-between text-white">
               <div>
-                <div class="font-medium">System UPI (Auto / Any)</div>
-                <div class="text-[10px] text-white/60">Launch system default upi://pay scanner intent</div>
+                <div class="font-medium lowercase text-[13px]">system upi (auto)</div>
+                <div class="text-[10px] text-white/50 lowercase">launches system default payment scanner intent</div>
               </div>
-              <span id="checkPaySystem" class="text-cyan-400 font-bold hidden">✓</span>
+              <span id="checkPaySystem" class="text-white font-medium text-sm hidden">✓</span>
             </div>
           </div>
         </div>
 
-        <!-- Water Drop Refraction Principles -->
+        <!-- About Meos Principles -->
         <div>
-          <div class="text-[10px] uppercase tracking-widest text-cyan-400 font-semibold mb-2.5">Longitudinal Water Refraction</div>
-          <div class="space-y-2 text-[11px] text-white/75 leading-relaxed bg-white/5 p-3 rounded-2xl border border-white/10">
-            <div>✓ <b>Longitudinal Scale:</b> Tall, stretched numerals along the vertical axis.</div>
-            <div>✓ <b>Zero Boundary:</b> No stroke lines, no borders—pure optical water drops.</div>
-            <div>✓ <b>Optical Lens:</b> Background image is magnified & bent right inside the numbers.</div>
-            <div>✓ <b>Mindful Delay:</b> 5-15s breathing pause before addictive social apps.</div>
+          <div class="text-[11px] font-medium tracking-wider text-white/40 lowercase mb-2.5">about meos</div>
+          <div class="space-y-2.5 text-[11px] text-white/70 leading-relaxed bg-white/5 p-3.5 rounded-2xl border border-white/10 backdrop-blur-md">
+            <div><span class="text-white font-medium lowercase">liquid optics</span> — transparent numerals magnify and refract background</div>
+            <div><span class="text-white font-medium lowercase">zero boundary</span> — no cards or outlines cluttering cognitive focus</div>
+            <div><span class="text-white font-medium lowercase">mindful pause</span> — breathing delay before opening distracting apps</div>
+            <div><span class="text-white font-medium lowercase">private & offline</span> — zero tracking, zero ads, completely local</div>
           </div>
         </div>
       </div>
@@ -712,7 +712,7 @@ html_content = f'''<!DOCTYPE html>
 
       renderFavorites();
       renderAllApps();
-      showToast(`Atmosphere: ${{wp.toUpperCase()}}`);
+      showToast(`atmosphere: ${{wp}}`);
     }}
 
     // Render Favorites in PURE WATER DROPLET REFRACTION (Zero boundary!)
@@ -942,7 +942,7 @@ html_content = f'''<!DOCTYPE html>
     }}
 
     let selectedPaymentApp = 'gpay';
-    let selectedPaymentAppName = 'Google Pay';
+    let selectedPaymentAppName = 'google pay';
 
     function setPaymentApp(key, name) {{
       selectedPaymentApp = key;
@@ -954,12 +954,12 @@ html_content = f'''<!DOCTYPE html>
       document.getElementById('checkPayBhim').classList.toggle('hidden', key !== 'bhim');
       document.getElementById('checkPaySystem').classList.toggle('hidden', key !== 'system');
 
-      showToast(`Scanner set to ${{name}}`);
+      showToast(`scanner: ${{name}}`);
     }}
 
     function openUpiScanner() {{
       // Directly opens the scanner of the chosen online payment app
-      showToast(`Opening ${{selectedPaymentAppName}} Scanner...`);
+      showToast(`opening ${{selectedPaymentAppName}} scanner...`);
     }}
 
     function closeUpiScanner() {{}}

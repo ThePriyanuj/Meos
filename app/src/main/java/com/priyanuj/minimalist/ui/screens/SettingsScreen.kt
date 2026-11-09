@@ -77,7 +77,7 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "COLOR THEME",
+                text = "atmosphere",
                 style = MaterialTheme.typography.labelSmall.copy(
                     color = MaterialTheme.colorScheme.secondary,
                     fontSize = 11.sp,
@@ -110,7 +110,7 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "TYPOGRAPHY FONT",
+                text = "typography",
                 style = MaterialTheme.typography.labelSmall.copy(
                     color = MaterialTheme.colorScheme.secondary,
                     fontSize = 11.sp,
@@ -142,12 +142,8 @@ fun SettingsScreen(
             HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
             Spacer(modifier = Modifier.height(16.dp))
 
-                        Spacer(modifier = Modifier.height(16.dp))
-            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
-            Spacer(modifier = Modifier.height(16.dp))
-
             Text(
-                text = "DEFAULT PAYMENT SCANNER APP",
+                text = "payment scanner",
                 style = MaterialTheme.typography.labelSmall.copy(
                     color = MaterialTheme.colorScheme.secondary,
                     fontSize = 11.sp,
@@ -182,13 +178,17 @@ fun SettingsScreen(
             )
 
             OptionRow(
-                title = "system upi (auto / any)",
+                title = "system upi (auto)",
                 isSelected = selectedPaymentApp == "system",
                 onClick = { onPaymentAppSelect("system") }
             )
 
+            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+            Spacer(modifier = Modifier.height(16.dp))
+
             Text(
-                text = "PRIVACY",
+                text = "privacy",
                 style = MaterialTheme.typography.labelSmall.copy(
                     color = MaterialTheme.colorScheme.secondary,
                     fontSize = 11.sp,
